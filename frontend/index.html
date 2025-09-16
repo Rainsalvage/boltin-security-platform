@@ -1,0 +1,675 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BOLTIN - Ultimate Gadget Security & Protection</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <script defer src="js/main.js"></script>
+</head>
+<body>
+    <!-- Navigation -->
+    <header class="navbar">
+        <div class="container">
+            <div class="nav-container">
+                <div class="logo">
+                    <i class="fas fa-shield-alt"></i>
+                    BOLTIN
+                </div>
+                <div class="hamburger">
+                    <span class="bar"></span>
+                    <span class="bar"></span>
+                    <span class="bar"></span>
+                </div>
+                <ul class="nav-menu">
+                    <li class="nav-item"><a href="#home" class="nav-link">Home</a></li>
+                    <li class="nav-item"><a href="#features" class="nav-link">Features</a></li>
+                    <li class="nav-item"><a href="#register" class="nav-link">Register Gadget</a></li>
+                    <li class="nav-item"><a href="#search" class="nav-link">Search Device</a></li>
+                    <li class="nav-item"><a href="#transfer" class="nav-link">Transfer Ownership</a></li>
+                    <li class="nav-item"><a href="#dashboard" class="nav-link">Dashboard</a></li>
+                </ul>
+            </div>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section id="home" class="hero">
+        <div class="container">
+            <div class="hero-content">
+                <div class="hero-badge">
+                    <i class="fas fa-shield-alt"></i>
+                    TRUSTED BY THOUSANDS
+                </div>
+                <h1 class="hero-title">
+                    <i class="fas fa-shield-alt"></i>
+                    PROTECT YOUR GADGETS
+                </h1>
+                <p class="hero-subtitle">
+                    The Ultimate Security Platform for Device Registration, Theft Prevention & Recovery
+                </p>
+                <div class="hero-features">
+                    <div class="feature-item">
+                        <i class="fas fa-check"></i>
+                        Instant Registration
+                    </div>
+                    <div class="feature-item">
+                        <i class="fas fa-check"></i>
+                        Real-time Tracking
+                    </div>
+                    <div class="feature-item">
+                        <i class="fas fa-check"></i>
+                        AI-Powered Recovery
+                    </div>
+                </div>
+                <div class="hero-buttons">
+                    <a href="#register" class="cta-button primary pulse-animation">
+                        <i class="fas fa-plus-circle"></i>
+                        Register Device Now
+                        <span class="button-tooltip">Start protecting your device in 30 seconds</span>
+                    </a>
+                    <a href="#search" class="cta-button secondary">
+                        <i class="fas fa-search"></i>
+                        Check Device Status
+                        <span class="button-tooltip">Search our database instantly</span>
+                    </a>
+                </div>
+                <div class="hero-stats">
+                    <div class="stat">
+                        <span class="stat-number" id="registered-count">0</span>
+                        <span class="stat-label">Devices Protected</span>
+                        <div class="stat-trend">
+                            <i class="fas fa-arrow-up"></i>
+                            +15% this month
+                        </div>
+                    </div>
+                    <div class="stat">
+                        <span class="stat-number" id="recovered-count">0</span>
+                        <span class="stat-label">Devices Recovered</span>
+                        <div class="stat-trend">
+                            <i class="fas fa-arrow-up"></i>
+                            98.5% success rate
+                        </div>
+                    </div>
+                    <div class="stat">
+                        <span class="stat-number">24/7</span>
+                        <span class="stat-label">Security Monitoring</span>
+                        <div class="stat-trend">
+                            <i class="fas fa-shield-alt"></i>
+                            Always active
+                        </div>
+                    </div>
+                </div>
+                <div class="trust-indicators">
+                    <div class="trust-item">
+                        <i class="fas fa-lock"></i>
+                        <span>Bank-level Security</span>
+                    </div>
+                    <div class="trust-item">
+                        <i class="fas fa-users"></i>
+                        <span>Trusted by 50,000+ Users</span>
+                    </div>
+                    <div class="trust-item">
+                        <i class="fas fa-award"></i>
+                        <span>Industry Leading Platform</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="hero-scroll-indicator">
+            <i class="fas fa-chevron-down"></i>
+            <span>Discover Features</span>
+        </div>
+    </section>
+
+    <!-- Quick Actions Section -->
+    <section id="features" class="quick-actions">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">POWERFUL SECURITY FEATURES</h2>
+                <p class="section-subtitle">Everything you need to protect and recover your valuable devices</p>
+            </div>
+            <div class="actions-grid">
+                <div class="action-card" data-action="register">
+                    <div class="action-icon">
+                        <i class="fas fa-shield-alt"></i>
+                    </div>
+                    <h3 class="action-title">Register Gadget</h3>
+                    <p class="action-description">Secure your device with our advanced registration system in under 30 seconds</p>
+                    <div class="action-features">
+                        <span class="feature-tag">✓ Instant Protection</span>
+                        <span class="feature-tag">✓ Cloud Backup</span>
+                    </div>
+                    <button class="action-button" onclick="showRegistration()">
+                        <i class="fas fa-arrow-right"></i>
+                        Start Registration
+                    </button>
+                </div>
+                
+                <div class="action-card" data-action="search">
+                    <div class="action-icon">
+                        <i class="fas fa-search"></i>
+                    </div>
+                    <h3 class="action-title">Device Lookup</h3>
+                    <p class="action-description">Check if a device is registered or reported stolen with our global database</p>
+                    <div class="action-features">
+                        <span class="feature-tag">✓ Instant Results</span>
+                        <span class="feature-tag">✓ Global Database</span>
+                    </div>
+                    <button class="action-button" onclick="showSearch()">
+                        <i class="fas fa-arrow-right"></i>
+                        Search Now
+                    </button>
+                </div>
+                
+                <div class="action-card" data-action="report">
+                    <div class="action-icon">
+                        <i class="fas fa-exclamation-triangle"></i>
+                    </div>
+                    <h3 class="action-title">Report Lost/Stolen</h3>
+                    <p class="action-description">Immediately flag your device and activate our recovery network</p>
+                    <div class="action-features">
+                        <span class="feature-tag">✓ Instant Alert</span>
+                        <span class="feature-tag">✓ Recovery Network</span>
+                    </div>
+                    <button class="action-button" onclick="showLostReport()">
+                        <i class="fas fa-arrow-right"></i>
+                        Report Device
+                    </button>
+                </div>
+                
+                <div class="action-card" data-action="chatbot">
+                    <div class="action-icon">
+                        <i class="fas fa-robot"></i>
+                    </div>
+                    <h3 class="action-title">AI Assistant</h3>
+                    <p class="action-description">Get instant help with our intelligent chatbot available 24/7</p>
+                    <div class="action-features">
+                        <span class="feature-tag">✓ 24/7 Support</span>
+                        <span class="feature-tag">✓ Smart Assistance</span>
+                    </div>
+                    <button class="action-button" onclick="toggleChatbot()">
+                        <i class="fas fa-arrow-right"></i>
+                        Ask Assistant
+                    </button>
+                </div>
+                
+                <div class="action-card" data-action="transfer">
+                    <div class="action-icon">
+                        <i class="fas fa-exchange-alt"></i>
+                    </div>
+                    <h3 class="action-title">Transfer Ownership</h3>
+                    <p class="action-description">Securely transfer device ownership to a new owner with full verification</p>
+                    <div class="action-features">
+                        <span class="feature-tag">✓ Secure Process</span>
+                        <span class="feature-tag">✓ Legal Protection</span>
+                    </div>
+                    <button class="action-button" onclick="showTransfer()">
+                        <i class="fas fa-arrow-right"></i>
+                        Start Transfer
+                    </button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Live Activity Feed -->
+    <section class="activity-feed">
+        <div class="container">
+            <h2 class="section-title">LIVE SECURITY ACTIVITY</h2>
+            <div class="activity-container">
+                <div class="activity-item" id="activity-1">
+                    <div class="activity-icon success">
+                        <i class="fas fa-shield-alt"></i>
+                    </div>
+                    <div class="activity-content">
+                        <p><strong>iPhone 13</strong> registered successfully</p>
+                        <span class="activity-time">2 minutes ago</span>
+                    </div>
+                    <div class="activity-location">Lagos, Nigeria</div>
+                </div>
+                <div class="activity-item" id="activity-2">
+                    <div class="activity-icon recovered">
+                        <i class="fas fa-check-circle"></i>
+                    </div>
+                    <div class="activity-content">
+                        <p><strong>MacBook Pro</strong> recovered and returned to owner</p>
+                        <span class="activity-time">5 minutes ago</span>
+                    </div>
+                    <div class="activity-location">Abuja, Nigeria</div>
+                </div>
+                <div class="activity-item" id="activity-3">
+                    <div class="activity-icon warning">
+                        <i class="fas fa-exclamation-triangle"></i>
+                    </div>
+                    <div class="activity-content">
+                        <p><strong>Samsung Galaxy</strong> reported as stolen</p>
+                        <span class="activity-time">8 minutes ago</span>
+                    </div>
+                    <div class="activity-location">Port Harcourt, Nigeria</div>
+                </div>
+                <div class="activity-item" id="activity-4">
+                    <div class="activity-icon success">
+                        <i class="fas fa-shield-alt"></i>
+                    </div>
+                    <div class="activity-content">
+                        <p><strong>iPad Air</strong> registered successfully</p>
+                        <span class="activity-time">12 minutes ago</span>
+                    </div>
+                    <div class="activity-location">Kano, Nigeria</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Testimonials Section -->
+    <section class="testimonials">
+        <div class="container">
+            <h2 class="section-title">TRUSTED BY THOUSANDS</h2>
+            <div class="testimonials-grid">
+                <div class="testimonial-card">
+                    <div class="testimonial-content">
+                        <p>"Boltin helped me recover my stolen iPhone within 48 hours. The platform is incredibly efficient!"</p>
+                    </div>
+                    <div class="testimonial-author">
+                        <div class="author-avatar">
+                            <i class="fas fa-user"></i>
+                        </div>
+                        <div class="author-info">
+                            <span class="author-name">Adebayo Johnson</span>
+                            <span class="author-title">Lagos Business Owner</span>
+                        </div>
+                    </div>
+                    <div class="testimonial-rating">
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                    </div>
+                </div>
+                
+                <div class="testimonial-card">
+                    <div class="testimonial-content">
+                        <p>"The registration process is so simple, and knowing my devices are protected gives me peace of mind."</p>
+                    </div>
+                    <div class="testimonial-author">
+                        <div class="author-avatar">
+                            <i class="fas fa-user"></i>
+                        </div>
+                        <div class="author-info">
+                            <span class="author-name">Fatima Ibrahim</span>
+                            <span class="author-title">University Student</span>
+                        </div>
+                    </div>
+                    <div class="testimonial-rating">
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                    </div>
+                </div>
+                
+                <div class="testimonial-card">
+                    <div class="testimonial-content">
+                        <p>"As a tech professional, I appreciate the security features and AI-powered assistance. Highly recommended!"</p>
+                    </div>
+                    <div class="testimonial-author">
+                        <div class="author-avatar">
+                            <i class="fas fa-user"></i>
+                        </div>
+                        <div class="author-info">
+                            <span class="author-name">Chinedu Okafor</span>
+                            <span class="author-title">Software Engineer</span>
+                        </div>
+                    </div>
+                    <div class="testimonial-rating">
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Main Content Area -->
+    <main id="main-content" class="main-content">
+        <!-- Dynamic content will be loaded here -->
+    </main>
+
+    <!-- Device Registration Form -->
+    <section id="register" class="registration-section" style="display: none;">
+        <div class="container">
+            <div class="form-container">
+                <h2 class="form-title">
+                    <i class="fas fa-shield-alt"></i>
+                    Register Your Device
+                </h2>
+                <form id="registration-form" class="registration-form">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="owner-name">Owner Name *</label>
+                            <input type="text" id="owner-name" name="ownerName" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="contact">Contact (Phone/Email) *</label>
+                            <input type="text" id="contact" name="contact" required>
+                        </div>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="device-type">Device Type *</label>
+                            <select id="device-type" name="deviceType" required>
+                                <option value="">Select Device Type</option>
+                                <option value="smartphone">Smartphone</option>
+                                <option value="laptop">Laptop</option>
+                                <option value="tablet">Tablet</option>
+                                <option value="smartwatch">Smartwatch</option>
+                                <option value="headphones">Headphones</option>
+                                <option value="other">Other</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="brand">Brand *</label>
+                            <input type="text" id="brand" name="brand" required>
+                        </div>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="model">Model *</label>
+                            <input type="text" id="model" name="model" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="serial-number">Serial/IMEI Number *</label>
+                            <input type="text" id="serial-number" name="serialNumber" required>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="description">Description (Optional)</label>
+                        <textarea id="description" name="description" rows="3" placeholder="Additional details about your device..."></textarea>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="device-image">Device Photos *</label>
+                        <div class="image-upload-container">
+                            <div class="image-upload-area" onclick="triggerImageUpload()">
+                                <i class="fas fa-camera"></i>
+                                <p>Click to upload device photos</p>
+                                <span class="upload-hint">Upload clear photos of your device (front, back, serial number)</span>
+                            </div>
+                            <input type="file" id="device-images" name="deviceImages" multiple accept="image/*" style="display: none;">
+                            <div class="image-preview-container" id="image-preview-container"></div>
+                        </div>
+                    </div>
+                    
+                    <button type="submit" class="submit-button">
+                        <i class="fas fa-shield-alt"></i>
+                        Register Device
+                    </button>
+                </form>
+            </div>
+        </div>
+    </section>
+
+    <!-- Device Search Section -->
+    <section id="search" class="search-section" style="display: none;">
+        <div class="container">
+            <div class="search-container">
+                <h2 class="form-title">
+                    <i class="fas fa-search"></i>
+                    Device Security Check
+                </h2>
+                <form id="search-form" class="search-form">
+                    <div class="search-input-group">
+                        <input type="text" id="search-serial" placeholder="Enter Serial/IMEI Number" required>
+                        <button type="submit" class="search-button">
+                            <i class="fas fa-search"></i>
+                            Check Status
+                        </button>
+                    </div>
+                </form>
+                <div id="search-results" class="search-results"></div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Device Ownership Transfer Section -->
+    <section id="transfer" class="transfer-section" style="display: none;">
+        <div class="container">
+            <div class="form-container">
+                <h2 class="form-title">
+                    <i class="fas fa-exchange-alt"></i>
+                    Transfer Device Ownership
+                </h2>
+                <form id="transfer-form" class="transfer-form">
+                    <div class="step active" data-step="1">
+                        <div class="step-number">1</div>
+                        <div class="step-title">Verify Device</div>
+                    </div>
+                    <div class="step" data-step="2">
+                        <div class="step-number">2</div>
+                        <div class="step-title">New Owner Info</div>
+                    </div>
+                    <div class="step" data-step="3">
+                        <div class="step-number">3</div>
+                        <div class="step-title">Confirm Transfer</div>
+                    </div>
+                </div>
+                
+                <!-- Step 1: Verify Device -->
+                <div class="transfer-step-content" id="transfer-step-1">
+                    <h3>Step 1: Verify Your Device</h3>
+                    <form id="verify-device-form">
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="current-owner-contact">Your Contact (Current Owner) *</label>
+                                <input type="text" id="current-owner-contact" name="currentOwnerContact" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="transfer-device-serial">Device Serial/IMEI Number *</label>
+                                <input type="text" id="transfer-device-serial" name="serialNumber" required>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="transfer-reason">Reason for Transfer *</label>
+                            <select id="transfer-reason" name="transferReason" required>
+                                <option value="">Select Reason</option>
+                                <option value="sale">Device Sale</option>
+                                <option value="gift">Gift to Family/Friend</option>
+                                <option value="exchange">Device Exchange</option>
+                                <option value="repair">Repair/Service</option>
+                                <option value="other">Other</option>
+                            </select>
+                        </div>
+                        <button type="button" class="transfer-next-btn" onclick="nextTransferStep()">
+                            <i class="fas fa-arrow-right"></i>
+                            Verify & Continue
+                        </button>
+                    </form>
+                </div>
+                
+                <!-- Step 2: New Owner Information -->
+                <div class="transfer-step-content" id="transfer-step-2" style="display: none;">
+                    <h3>Step 2: New Owner Information</h3>
+                    <form id="new-owner-form">
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="new-owner-name">New Owner Name *</label>
+                                <input type="text" id="new-owner-name" name="newOwnerName" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="new-owner-contact">New Owner Contact *</label>
+                                <input type="text" id="new-owner-contact" name="newOwnerContact" required>
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="new-owner-email">New Owner Email (Optional)</label>
+                                <input type="email" id="new-owner-email" name="newOwnerEmail">
+                            </div>
+                            <div class="form-group">
+                                <label for="transfer-date">Transfer Date *</label>
+                                <input type="date" id="transfer-date" name="transferDate" required>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="transfer-notes">Additional Notes (Optional)</label>
+                            <textarea id="transfer-notes" name="transferNotes" rows="3" placeholder="Any additional information about the transfer..."></textarea>
+                        </div>
+                        <div class="form-buttons">
+                            <button type="button" class="transfer-back-btn" onclick="previousTransferStep()">
+                                <i class="fas fa-arrow-left"></i>
+                                Back
+                            </button>
+                            <button type="button" class="transfer-next-btn" onclick="nextTransferStep()">
+                                <i class="fas fa-arrow-right"></i>
+                                Continue
+                            </button>
+                        </div>
+                    </form>
+                </div>
+                
+                <!-- Step 3: Confirm Transfer -->
+                <div class="transfer-step-content" id="transfer-step-3" style="display: none;">
+                    <h3>Step 3: Confirm Transfer</h3>
+                    <div class="transfer-summary">
+                        <div class="summary-section">
+                            <h4><i class="fas fa-mobile-alt"></i> Device Information</h4>
+                            <div class="summary-item">
+                                <span class="label">Serial Number:</span>
+                                <span class="value" id="summary-serial">-</span>
+                            </div>
+                            <div class="summary-item">
+                                <span class="label">Transfer Reason:</span>
+                                <span class="value" id="summary-reason">-</span>
+                            </div>
+                        </div>
+                        
+                        <div class="summary-section">
+                            <h4><i class="fas fa-user"></i> Current Owner</h4>
+                            <div class="summary-item">
+                                <span class="label">Contact:</span>
+                                <span class="value" id="summary-current-owner">-</span>
+                            </div>
+                        </div>
+                        
+                        <div class="summary-section">
+                            <h4><i class="fas fa-user-plus"></i> New Owner</h4>
+                            <div class="summary-item">
+                                <span class="label">Name:</span>
+                                <span class="value" id="summary-new-name">-</span>
+                            </div>
+                            <div class="summary-item">
+                                <span class="label">Contact:</span>
+                                <span class="value" id="summary-new-contact">-</span>
+                            </div>
+                            <div class="summary-item">
+                                <span class="label">Transfer Date:</span>
+                                <span class="value" id="summary-transfer-date">-</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="transfer-agreement">
+                        <label class="checkbox-container">
+                            <input type="checkbox" id="transfer-agreement" required>
+                            <span class="checkmark"></span>
+                            <span class="agreement-text">
+                                I confirm that I am the current owner of this device and authorize the transfer of ownership to the person specified above. I understand that this action cannot be undone and the new owner will have full control over the device registration.
+                            </span>
+                        </label>
+                    </div>
+                    
+                    <div class="form-buttons">
+                        <button type="button" class="transfer-back-btn" onclick="previousTransferStep()">
+                            <i class="fas fa-arrow-left"></i>
+                            Back
+                        </button>
+                        <button type="button" class="transfer-submit-btn" onclick="submitTransfer()">
+                            <i class="fas fa-exchange-alt"></i>
+                            Complete Transfer
+                        </button>
+                    </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </section>
+
+    <!-- Chatbot -->
+    <div id="chatbot" class="chatbot" style="display: none;">
+        <div class="chatbot-header">
+            <div class="chatbot-title">
+                <i class="fas fa-robot"></i>
+                Boltin Assistant
+            </div>
+            <button class="chatbot-close" onclick="toggleChatbot()">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        <div class="chatbot-body" id="chat-messages">
+            <div class="chat-message bot-message">
+                <i class="fas fa-robot"></i>
+                Hello! I'm your Boltin security assistant. How can I help you protect your devices today?
+            </div>
+        </div>
+        <div class="chatbot-footer">
+            <form id="chat-form">
+                <input type="text" id="chat-input" placeholder="Ask me anything about device security..." required>
+                <button type="submit">
+                    <i class="fas fa-paper-plane"></i>
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Chatbot toggle button -->
+    <div class="chatbot-toggle" onclick="toggleChatbot()" title="Open Boltin Assistant">
+        <i class="fas fa-robot"></i>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <div class="footer-logo">
+                        <i class="fas fa-shield-alt"></i>
+                        BOLTIN
+                    </div>
+                    <p>Protecting your digital life, one device at a time.</p>
+                </div>
+                <div class="footer-section">
+                    <h3>Quick Links</h3>
+                    <ul>
+                        <li><a href="#register">Register Device</a></li>
+                        <li><a href="#search">Search Device</a></li>
+                        <li><a href="#dashboard">Dashboard</a></li>
+                        <li><a href="#support">Support</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h3>Emergency</h3>
+                    <p>Report stolen device: <strong>24/7 Hotline</strong></p>
+                    <p>Email: <strong>security@boltin.com</strong></p>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2025 BOLTIN Security Platform. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Success/Error Toast Messages -->
+    <div id="toast-container" class="toast-container"></div>
+</body>
+</html>

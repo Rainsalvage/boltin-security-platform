@@ -1,0 +1,20 @@
+{
+  "users": [],
+  "gadgets": [],
+  "notifications": [],
+  "chatbotConversations": [
+    {
+      "sessionId": "session-1758054129644-85053",
+      "timestamp": "2025-09-16T20:22:09.645Z",
+      "userMessage": "if my device is stolen how can boltin get it back for me",
+      "botResponse": "I'm here to help with gadget registration, checking if a gadget is stolen, answering app questions, and providing emergency steps. Could you please rephrase your question or be more specific about what you need help with?"
+    },
+    {
+      "sessionId": "session-1758054180923-42652",
+      "timestamp": "2025-09-16T20:23:00.923Z",
+      "userMessage": "how will my gadget be returned if stolen",
+      "botResponse": "I'm here to help with gadget registration, checking if a gadget is stolen, answering app questions, and providing emergency steps. Could you please rephrase your question or be more specific about what you need help with?"
+    }
+  ],
+  "adminNotifications": []
+}

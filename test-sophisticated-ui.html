@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BOLTIN - Sophisticated UI Test</title>
+    <style>
+        body { 
+            margin: 0; 
+            padding: 20px; 
+            background: #000; 
+            color: #fff; 
+            font-family: Arial, sans-serif; 
+        }
+        .test-container { 
+            max-width: 800px; 
+            margin: 0 auto; 
+            text-align: center; 
+        }
+        .test-button { 
+            display: inline-block; 
+            margin: 10px; 
+            padding: 15px 30px; 
+            background: linear-gradient(135deg, #D4AF37, #FFD700); 
+            color: #000; 
+            text-decoration: none; 
+            border-radius: 8px; 
+            font-weight: bold;
+            transition: all 0.3s ease;
+        }
+        .test-button:hover { 
+            transform: translateY(-2px); 
+            box-shadow: 0 8px 20px rgba(212, 175, 55, 0.4); 
+        }
+        .status-indicator {
+            background: linear-gradient(135deg, #10B981, #059669);
+            padding: 10px 20px;
+            border-radius: 20px;
+            margin: 20px 0;
+            display: inline-block;
+        }
+    </style>
+</head>
+<body>
+    <div class="test-container">
+        <h1>🛡️ BOLTIN Security Platform</h1>
+        <div class="status-indicator">✅ Sophisticated UI v3.0 Test Page</div>
+        <p>This test page verifies that the sophisticated interface components are working.</p>
+        
+        <div>
+            <a href="frontend/index.html" class="test-button">🚀 Launch Main App</a>
+            <a href="http://localhost:3000" class="test-button">🌐 Open Web Version</a>
+        </div>
+        
+        <div style="margin-top: 40px; text-align: left; background: rgba(255,255,255,0.1); padding: 20px; border-radius: 10px;">
+            <h3>🔍 Interface Features to Look For:</h3>
+            <ul>
+                <li>✨ Golden "SOPHISTICATED UI v3.0 LOADED" indicator in top-right corner</li>
+                <li>🎨 Enhanced gradient backgrounds and gold accents</li>
+                <li>⚡ Smooth hover animations on buttons and cards</li>
+                <li>🌟 Glass morphism effects on cards and modals</li>
+                <li>🎭 Premium typography and spacing</li>
+                <li>💫 Sophisticated animations and transitions</li>
+            </ul>
+        </div>
+        
+        <div style="margin-top: 20px; padding: 15px; background: rgba(255,255,255,0.05); border-radius: 8px;">
+            <h4>🔧 Troubleshooting:</h4>
+            <p>If the sophisticated interface isn't showing:</p>
+            <ol style="text-align: left;">
+                <li>Press Ctrl+F5 to force refresh</li>
+                <li>Clear browser cache (Ctrl+Shift+Delete)</li>
+                <li>Try opening in incognito/private mode</li>
+                <li>Check browser console for any errors</li>
+            </ol>
+        </div>
+    </div>
+    
+    <script>
+        console.log('🧪 Sophisticated UI Test Page Loaded');
+        
+        // Test JavaScript functionality
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('✅ DOM Ready - Test page initialized');
+            
+            // Add test animations
+            const buttons = document.querySelectorAll('.test-button');
+            buttons.forEach(btn => {
+                btn.addEventListener('mouseenter', function() {
+                    console.log('🎯 Button hover detected - animations working');
+                });
+            });
+        });
+    </script>
+</body>
+</html>

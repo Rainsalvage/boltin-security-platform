@@ -129,6 +129,54 @@ body {
     padding: 0;
     overflow-x: hidden;
     position: relative;
+    /* Force refresh indicator */
+    --refresh-indicator: 'v3.0-sophisticated';
+    
+    /* Sophisticated UI Detection */
+    --sophisticated-active: true;
+    --sophisticated-version: '3.0';
+}
+
+/* Sophisticated Mode Activation Styles */
+body.sophisticated-mode {
+    --primary-glow: 0 0 30px rgba(212, 175, 55, 0.4);
+    background: linear-gradient(135deg, #000000 0%, #0f0f0f 50%, #1a1a1a 100%);
+}
+
+body.sophisticated-mode::before {
+    opacity: 1;
+    animation: sophisticatedFloat 15s ease-in-out infinite;
+}
+
+.sophisticated-btn {
+    transform: translateY(0);
+    transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    box-shadow: 0 4px 20px rgba(212, 175, 55, 0.2);
+}
+
+.sophisticated-btn:hover {
+    transform: translateY(-2px) scale(1.02);
+    box-shadow: 0 8px 30px rgba(212, 175, 55, 0.4);
+}
+
+.sophisticated-card {
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0.05) 100%);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(212, 175, 55, 0.2);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+}
+
+.sophisticated-hero {
+    background: radial-gradient(ellipse at center top, rgba(212, 175, 55, 0.1) 0%, transparent 70%);
+}
+
+/* Force visibility of sophisticated elements */
+.btn-primary {
+    background: linear-gradient(135deg, var(--luxury-gold) 0%, var(--bright-gold) 100%) !important;
+    border: none !important;
+    color: #000 !important;
+    font-weight: 600 !important;
+}
 }
 
 /* Premium Background with Sophisticated Pattern */

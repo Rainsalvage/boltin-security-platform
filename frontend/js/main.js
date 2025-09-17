@@ -1,4 +1,43 @@
 // Boltin App - Main JavaScript Functionality
+// Sophisticated UI v3.0 - Enhanced with Premium Features
+
+// IMMEDIATE SOPHISTICATED FEATURES ACTIVATION
+(function() {
+    console.log('✨ Activating Sophisticated UI Features v3.0...');
+    
+    // Force sophisticated styles to load immediately
+    function forceSophisticatedMode() {
+        document.documentElement.style.setProperty('--refresh-indicator', 'v3.0-sophisticated');
+        document.body.classList.add('sophisticated-mode', 'premium-ui', 'enhanced-animations');
+        
+        // Add sophisticated CSS classes to key elements
+        setTimeout(() => {
+            const heroSection = document.querySelector('.hero');
+            if (heroSection) {
+                heroSection.classList.add('sophisticated-hero', 'premium-animations');
+            }
+            
+            const buttons = document.querySelectorAll('.btn');
+            buttons.forEach(btn => {
+                btn.classList.add('sophisticated-btn', 'premium-hover');
+            });
+            
+            const cards = document.querySelectorAll('.action-card, .card');
+            cards.forEach(card => {
+                card.classList.add('sophisticated-card', 'premium-effects');
+            });
+            
+            console.log('✅ Sophisticated UI features activated successfully!');
+        }, 100);
+    }
+    
+    // Activate immediately if DOM is ready, otherwise wait
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', forceSophisticatedMode);
+    } else {
+        forceSophisticatedMode();
+    }
+})();
 
 // Global variables
 let registeredDevices = 0;
@@ -21,6 +60,11 @@ document.addEventListener('DOMContentLoaded', function() {
     setupMobileEnhancements();
     checkAuthStatus();
     initializeSophisticatedFeatures();
+    
+    // Show sophisticated UI activation notification
+    setTimeout(() => {
+        showToast('✨ Sophisticated UI v3.0 Activated! Experience the enhanced interface.', 'success', 5000);
+    }, 1000);
 });
 
 // Initialize the application

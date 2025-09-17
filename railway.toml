@@ -1,0 +1,15 @@
+# Railway-specific configuration
+service_name = "boltin-security-platform"
+region = "us-west1"
+
+[build]
+command = "npm install"
+
+[deploy]
+command = "npm start"
+healthcheck_path = "/api/health"
+restart_policy = "on-failure"
+restart_policy_max_retries = 3
+
+[env]
+NODE_ENV = "production"

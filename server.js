@@ -28,7 +28,7 @@ app.use(helmet({
 // CORS configuration
 app.use(cors({
     origin: process.env.NODE_ENV === 'production' 
-        ? ['https://boltin-security-platform.vercel.app', 'https://boltin-security-platform.railway.app', 'https://boltin-security-platform.onrender.com']
+        ? true  // Allow all origins in production for Railway
         : ['http://localhost:3000', 'http://127.0.0.1:3000'],
     credentials: true,
     methods: ['GET', 'POST', 'PUT', 'DELETE'],
@@ -65,8 +65,9 @@ async function createDirectories() {
     for (const dir of dirs) {
         try {
             await fs.mkdir(dir, { recursive: true });
+            console.log(`✅ Directory ensured: ${dir}`);
         } catch (error) {
-            console.error(`Error creating directory ${dir}:`, error);
+            console.error(`❌ Error creating directory ${dir}:`, error);
         }
     }
 }
@@ -115,9 +116,12 @@ app.get('/', (req, res) => {
 app.get('/api/health', (req, res) => {
     res.json({
         status: 'OK',
+        message: '🛡️ Boltin Security Platform is running',
         timestamp: new Date().toISOString(),
-        uptime: process.uptime(),
-        environment: process.env.NODE_ENV || 'development'
+        uptime: Math.floor(process.uptime()),
+        environment: process.env.NODE_ENV || 'development',
+        version: '1.0.0',
+        platform: 'Railway/Render optimized'
     });
 });
 
@@ -165,12 +169,13 @@ async function startServer() {
         await createDirectories();
         await initializeDataFiles();
         
-        const server = app.listen(PORT, () => {
+        const server = app.listen(PORT, '0.0.0.0', () => {
             console.log(`🚀 Boltin Security Server running on port ${PORT}`);
             console.log(`🌐 Frontend: http://localhost:${PORT}`);
             console.log(`🔧 API: http://localhost:${PORT}/api`);
             console.log(`📊 Health Check: http://localhost:${PORT}/api/health`);
             console.log(`🛡️  Environment: ${process.env.NODE_ENV || 'development'}`);
+            console.log(`⚙️  Optimized for: Railway, Render, Heroku`);
         });
 
         // Export server for graceful shutdown

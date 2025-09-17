@@ -155,3 +155,17 @@ yarn.lock
 
 # Local git configuration
 .git/config.local
+
+# Railway/Render deployment files (keep these)
+!railway.json
+!railway.toml
+!Dockerfile
+!DEPLOYMENT.md
+
+# Netlify specific (exclude since we don't use it)
+.netlify/
+netlify.toml
+
+# Vercel specific (exclude since optimized for Railway)
+.vercel/
+vercel.json

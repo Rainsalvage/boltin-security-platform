@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const { devicesDB, reportsDB } = require('../utils/database');
+const { DeviceAnalyzer } = require('../utils/deviceProfiles');
 const { 
     searchValidationRules, 
     handleValidationErrors 
@@ -12,68 +13,100 @@ const {
     getDeviceStatus
 } = require('../utils/middleware');
 
-// GET /api/search - Search devices by serial number or other criteria
+// GET /api/search - Enhanced search across all identification numbers
 router.get('/', 
     searchValidationRules(),
     handleValidationErrors,
     asyncHandler(async (req, res) => {
-        const { serial, brand, model, owner } = req.query;
+        const { serial, brand, model, owner, searchTerm } = req.query;
         
-        if (!serial && !brand && !model && !owner) {
+        if (!serial && !brand && !model && !owner && !searchTerm) {
             return sendError(res, 'At least one search parameter is required', 400);
         }
 
-        let criteria = {};
+        const devices = await devicesDB.read();
+        let filteredDevices = devices;
         
-        if (serial) {
-            criteria.serialNumber = serial.toUpperCase();
-        }
-        
-        if (brand) {
-            criteria.brand = brand;
-        }
-        
-        if (model) {
-            criteria.model = model;
-        }
-        
-        if (owner) {
-            criteria.ownerName = owner;
-        }
+        // If searchTerm is provided, use enhanced search across all ID fields
+        if (searchTerm) {
+            filteredDevices = DeviceAnalyzer.searchDeviceByAnyId(devices, searchTerm);
+        } else {
+            // Original search logic for specific fields
+            let criteria = {};
+            
+            if (serial) {
+                criteria.serialNumber = serial.toUpperCase();
+            }
+            
+            if (brand) {
+                criteria.brand = brand;
+            }
+            
+            if (model) {
+                criteria.model = model;
+            }
+            
+            if (owner) {
+                criteria.ownerName = owner;
+            }
 
-        const devices = await devicesDB.findBy(criteria);
+            filteredDevices = await devicesDB.findBy(criteria);
+        }
+        
         const reports = await reportsDB.read();
 
         // Add status information to each device
-        const devicesWithStatus = devices.map(device => ({
+        const devicesWithStatus = filteredDevices.map(device => ({
             ...device,
             status: getDeviceStatus(device, reports)
         }));
 
         sendSuccess(res, {
             devices: devicesWithStatus,
-            searchCriteria: { serial, brand, model, owner },
-            count: devicesWithStatus.length
+            searchCriteria: { serial, brand, model, owner, searchTerm },
+            count: devicesWithStatus.length,
+            enhancedSearch: !!searchTerm
         });
     })
 );
 
-// GET /api/search/serial/:serial - Quick serial number search
+// GET /api/search/serial/:serial - Enhanced quick search across all ID fields
 router.get('/serial/:serial', asyncHandler(async (req, res) => {
-    const serialNumber = req.params.serial.toUpperCase();
+    const searchTerm = req.params.serial;
     
-    if (serialNumber.length < 3) {
-        return sendError(res, 'Serial number must be at least 3 characters', 400);
+    if (searchTerm.length < 3) {
+        return sendError(res, 'Search term must be at least 3 characters', 400);
     }
 
-    const device = await devicesDB.findOne({ serialNumber });
+    const devices = await devicesDB.read();
     const reports = await reportsDB.read();
+    
+    // Enhanced search across all identification fields
+    const searchResults = DeviceAnalyzer.searchDeviceByAnyId(devices, searchTerm);
+    
+    // Also try exact serial number match for backward compatibility
+    const exactMatch = devices.find(device => 
+        device.serialNumber === searchTerm.toUpperCase()
+    );
+    
+    let foundDevice = null;
+    let matchType = 'none';
+    
+    if (exactMatch) {
+        foundDevice = exactMatch;
+        matchType = 'exact_serial';
+    } else if (searchResults.length > 0) {
+        foundDevice = searchResults[0]; // Take first match
+        matchType = 'identification_field';
+    }
 
-    if (!device) {
-        // Check if there are any reports for this serial number
-        const deviceReports = reports.filter(report => 
-            report.serialNumber === serialNumber
-        );
+    if (!foundDevice) {
+        // Check if there are any reports for this identifier
+        const deviceReports = reports.filter(report => {
+            const reportSerial = report.serialNumber;
+            return reportSerial === searchTerm.toUpperCase() || 
+                   reportSerial.toLowerCase().includes(searchTerm.toLowerCase());
+        });
 
         if (deviceReports.length > 0) {
             const latestReport = deviceReports.sort((a, b) => 
@@ -104,22 +137,25 @@ router.get('/serial/:serial', asyncHandler(async (req, res) => {
         });
     }
 
-    const status = getDeviceStatus(device, reports);
+    const status = getDeviceStatus(foundDevice, reports);
 
     sendSuccess(res, {
         found: true,
         device: {
-            id: device.id,
-            deviceType: device.deviceType,
-            brand: device.brand,
-            model: device.model,
-            serialNumber: device.serialNumber,
-            registeredAt: device.createdAt,
+            id: foundDevice.id,
+            deviceType: foundDevice.deviceType,
+            brand: foundDevice.brand,
+            model: foundDevice.model,
+            serialNumber: foundDevice.serialNumber,
+            registeredAt: foundDevice.createdAt,
             // Hide sensitive owner information in public search
-            ownerInitials: device.ownerName.split(' ').map(name => name[0]).join('.'),
-            verified: device.verified
+            ownerInitials: foundDevice.ownerName.split(' ').map(name => name[0]).join('.'),
+            verified: foundDevice.verified,
+            identificationNumbers: foundDevice.identificationNumbers || {}
         },
-        status
+        status,
+        matchType,
+        searchTerm
     });
 }));
 
@@ -242,6 +278,67 @@ router.get('/statistics', asyncHandler(async (req, res) => {
         securityIndex: totalDevices > 0 
             ? Math.round(((totalDevices - stolenReports) / totalDevices) * 100)
             : 100
+    });
+}));
+
+// GET /api/search/device-profiles - Get all supported device types and their profiles
+router.get('/device-profiles', asyncHandler(async (req, res) => {
+    const supportedTypes = DeviceAnalyzer.getSupportedDeviceTypes();
+    
+    sendSuccess(res, {
+        deviceTypes: supportedTypes,
+        count: supportedTypes.length
+    });
+}));
+
+// GET /api/search/device-profile/:type - Get specific device type profile
+router.get('/device-profile/:type', asyncHandler(async (req, res) => {
+    const deviceType = req.params.type;
+    const profile = DeviceAnalyzer.getDeviceProfile(deviceType);
+    
+    sendSuccess(res, {
+        deviceType,
+        profile
+    });
+}));
+
+// POST /api/search/ai-suggestions - Get AI suggestions for device identification
+router.post('/ai-suggestions', asyncHandler(async (req, res) => {
+    const { deviceType, brand, model } = req.body;
+    
+    if (!deviceType) {
+        return sendError(res, 'Device type is required', 400);
+    }
+    
+    const suggestions = DeviceAnalyzer.generateIdentificationSuggestions(
+        deviceType, 
+        brand || '', 
+        model || ''
+    );
+    
+    sendSuccess(res, {
+        suggestions,
+        deviceType,
+        brand,
+        model
+    });
+}));
+
+// POST /api/search/validate-field - Validate specific identification field
+router.post('/validate-field', asyncHandler(async (req, res) => {
+    const { fieldName, value, deviceType } = req.body;
+    
+    if (!fieldName || !deviceType) {
+        return sendError(res, 'Field name and device type are required', 400);
+    }
+    
+    const validation = DeviceAnalyzer.validateIdentificationField(fieldName, value, deviceType);
+    
+    sendSuccess(res, {
+        fieldName,
+        value,
+        deviceType,
+        validation
     });
 }));
 

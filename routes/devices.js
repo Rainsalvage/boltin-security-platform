@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const { devicesDB, reportsDB } = require('../utils/database');
+const { authenticateToken } = require('./auth');
 const { 
     deviceValidationRules, 
     handleValidationErrors, 
@@ -14,6 +15,23 @@ const {
     getDeviceStatus,
     generateStats
 } = require('../utils/middleware');
+
+// GET /api/devices/user - Get current user's devices
+router.get('/user/my-devices', 
+    authenticateToken,
+    asyncHandler(async (req, res) => {
+        const page = parseInt(req.query.page) || 1;
+        const limit = parseInt(req.query.limit) || 10;
+        
+        const criteria = { ownerId: req.user.userId };
+        const result = await devicesDB.paginate(page, limit, criteria);
+        
+        sendSuccess(res, {
+            devices: result.items,
+            pagination: result.pagination
+        });
+    })
+);
 
 // GET /api/devices - Get all devices with pagination
 router.get('/', asyncHandler(async (req, res) => {
@@ -68,35 +86,58 @@ router.get('/:id',
     })
 );
 
-// POST /api/devices - Register a new device
+// POST /api/devices - Register a new device with enhanced identification numbers
 router.post('/',
+    authenticateToken,
     deviceValidationRules(),
     handleValidationErrors,
     asyncHandler(async (req, res) => {
         const deviceData = sanitizeDevice(req.body);
         
-        // Check if device already exists
-        const existingDevice = await devicesDB.findOne({ 
-            serialNumber: deviceData.serialNumber 
-        });
+        // Check if device already exists by any identification number
+        const devices = await devicesDB.read();
+        let existingDevice = null;
+        
+        // Check primary serial number
+        existingDevice = devices.find(device => 
+            device.serialNumber === deviceData.serialNumber
+        );
         
         if (existingDevice) {
             return sendError(res, 'Device with this serial number already exists', 409);
         }
+        
+        // Check identification numbers for duplicates
+        if (deviceData.identificationNumbers) {
+            for (const [fieldName, fieldValue] of Object.entries(deviceData.identificationNumbers)) {
+                if (fieldValue && fieldValue.trim()) {
+                    const duplicate = devices.find(device => {
+                        const deviceIds = device.identificationNumbers || {};
+                        return deviceIds[fieldName] === fieldValue;
+                    });
+                    
+                    if (duplicate) {
+                        return sendError(res, `Device with this ${fieldName} already exists`, 409);
+                    }
+                }
+            }
+        }
 
-        // Create new device
+        // Create new device with user ID and identification numbers
         const newDevice = await devicesDB.create({
             ...deviceData,
+            ownerId: req.user.userId,
             images: [], // Will be populated when images are uploaded
             verified: false,
-            registrationIP: req.ip
+            registrationIP: req.ip,
+            cameraSignature: null // For camera devices
         });
 
         sendSuccess(res, { device: newDevice }, 'Device registered successfully', 201);
     })
 );
 
-// PUT /api/devices/:id - Update device information
+// PUT /api/devices/:id - Update device information with enhanced ID validation
 router.put('/:id',
     idValidationRules(),
     deviceValidationRules(),
@@ -118,6 +159,25 @@ router.put('/:id',
             
             if (conflictDevice && conflictDevice.id !== req.params.id) {
                 return sendError(res, 'Device with this serial number already exists', 409);
+            }
+        }
+        
+        // Check identification numbers for conflicts
+        if (deviceData.identificationNumbers) {
+            const devices = await devicesDB.read();
+            
+            for (const [fieldName, fieldValue] of Object.entries(deviceData.identificationNumbers)) {
+                if (fieldValue && fieldValue.trim()) {
+                    const duplicate = devices.find(device => {
+                        if (device.id === req.params.id) return false; // Skip current device
+                        const deviceIds = device.identificationNumbers || {};
+                        return deviceIds[fieldName] === fieldValue;
+                    });
+                    
+                    if (duplicate) {
+                        return sendError(res, `Device with this ${fieldName} already exists`, 409);
+                    }
+                }
             }
         }
 
@@ -177,18 +237,29 @@ router.post('/:id/verify',
     })
 );
 
-// GET /api/devices/serial/:serial - Find device by serial number
+// GET /api/devices/serial/:serial - Enhanced find device by any identification number
 router.get('/serial/:serial', asyncHandler(async (req, res) => {
-    const serialNumber = req.params.serial.toUpperCase();
+    const searchTerm = req.params.serial;
     
-    const device = await devicesDB.findOne({ serialNumber });
+    const devices = await devicesDB.read();
+    const reports = await reportsDB.read();
+    
+    // Try exact serial number match first
+    let device = devices.find(d => d.serialNumber === searchTerm.toUpperCase());
+    
+    // If not found, search across all identification fields
+    if (!device) {
+        const searchResults = require('../utils/deviceProfiles').DeviceAnalyzer.searchDeviceByAnyId(devices, searchTerm);
+        if (searchResults.length > 0) {
+            device = searchResults[0];
+        }
+    }
     
     if (!device) {
         return sendError(res, 'Device not found', 404);
     }
 
     // Get device status based on reports
-    const reports = await reportsDB.read();
     const status = getDeviceStatus(device, reports);
 
     sendSuccess(res, {

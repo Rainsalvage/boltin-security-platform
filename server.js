@@ -101,6 +101,7 @@ app.use(express.static('frontend'));
 app.use('/uploads', express.static('uploads'));
 
 // API Routes
+app.use('/api/auth', require('./routes/auth'));
 app.use('/api/devices', require('./routes/devices'));
 app.use('/api/search', require('./routes/search'));
 app.use('/api/transfer', require('./routes/transfer'));

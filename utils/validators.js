@@ -1,4 +1,5 @@
 const { body, param, query, validationResult } = require('express-validator');
+const { DeviceAnalyzer } = require('./deviceProfiles');
 
 // Custom validation functions
 const isValidSerialNumber = (value) => {
@@ -29,8 +30,41 @@ const deviceValidationRules = () => {
             .withMessage('Contact must be a valid email or phone number'),
         
         body('deviceType')
-            .isIn(['smartphone', 'laptop', 'tablet', 'smartwatch', 'headphones', 'other'])
+            .isIn(['smartphone', 'car', 'motorcycle', 'laptop', 'tablet', 'smartwatch', 'camera', 'gaming_console', 'headphones', 'other'])
             .withMessage('Invalid device type'),
+        
+        body('identificationNumbers')
+            .optional()
+            .isObject()
+            .withMessage('Identification numbers must be an object')
+            .custom((value, { req }) => {
+                if (!value || typeof value !== 'object') return true;
+                
+                const deviceType = req.body.deviceType;
+                if (!deviceType) return true;
+                
+                const profile = DeviceAnalyzer.getDeviceProfile(deviceType);
+                
+                // Validate each identification field
+                for (const [fieldName, fieldValue] of Object.entries(value)) {
+                    if (fieldValue && fieldValue.trim()) {
+                        const validation = DeviceAnalyzer.validateIdentificationField(fieldName, fieldValue, deviceType);
+                        if (!validation.valid) {
+                            throw new Error(`${fieldName}: ${validation.message}`);
+                        }
+                    }
+                }
+                
+                // Check required fields
+                const requiredFields = profile.identificationFields.filter(f => f.required);
+                for (const field of requiredFields) {
+                    if (!value[field.name] || !value[field.name].trim()) {
+                        throw new Error(`${field.label} is required for ${profile.name}`);
+                    }
+                }
+                
+                return true;
+            }),
         
         body('brand')
             .trim()
@@ -178,7 +212,7 @@ const handleValidationErrors = (req, res, next) => {
 
 // Sanitize input data
 const sanitizeDevice = (data) => {
-    return {
+    const sanitized = {
         ownerName: data.ownerName?.trim(),
         contact: data.contact?.trim(),
         deviceType: data.deviceType,
@@ -187,6 +221,28 @@ const sanitizeDevice = (data) => {
         serialNumber: data.serialNumber?.trim().toUpperCase(),
         description: data.description?.trim() || ''
     };
+    
+    // Handle identification numbers
+    if (data.identificationNumbers && typeof data.identificationNumbers === 'object') {
+        sanitized.identificationNumbers = {};
+        
+        for (const [key, value] of Object.entries(data.identificationNumbers)) {
+            if (value && typeof value === 'string' && value.trim()) {
+                // Normalize common fields
+                if (key === 'imei' || key === 'imei2') {
+                    sanitized.identificationNumbers[key] = value.replace(/\D/g, ''); // Remove non-digits
+                } else if (key === 'vin' || key === 'chassisNumber') {
+                    sanitized.identificationNumbers[key] = value.trim().toUpperCase();
+                } else if (key === 'macAddress' || key === 'bluetoothAddress') {
+                    sanitized.identificationNumbers[key] = value.trim().toUpperCase();
+                } else {
+                    sanitized.identificationNumbers[key] = value.trim();
+                }
+            }
+        }
+    }
+    
+    return sanitized;
 };
 
 const sanitizeTransfer = (data) => {

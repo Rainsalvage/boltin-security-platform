@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const { devicesDB } = require('../utils/database');
+const { authenticateToken } = require('./auth');
 const { 
     upload, 
     handleMulterError, 
@@ -15,6 +16,7 @@ const path = require('path');
 
 // POST /api/upload/device-images/:deviceId - Upload images for a device
 router.post('/device-images/:deviceId',
+    authenticateToken,
     idValidationRules(),
     handleValidationErrors,
     upload.array('deviceImages', 10),
@@ -307,5 +309,89 @@ router.delete('/cleanup-temp', asyncHandler(async (req, res) => {
         sendError(res, 'Error during cleanup operation', 500);
     }
 }));
+
+// POST /api/upload/camera-signature/:deviceId - Upload camera signature for a device
+router.post('/camera-signature/:deviceId',
+    authenticateToken,
+    idValidationRules(),
+    handleValidationErrors,
+    upload.single('cameraSignature'),
+    handleMulterError,
+    asyncHandler(async (req, res) => {
+        const deviceId = req.params.deviceId;
+        
+        if (!req.file) {
+            return sendError(res, 'No camera signature uploaded', 400);
+        }
+
+        // Check if device exists
+        const device = await devicesDB.findById(deviceId);
+        if (!device) {
+            // Clean up uploaded file if device doesn't exist
+            await cleanupFiles([req.file]);
+            return sendError(res, 'Device not found', 404);
+        }
+
+        // Process uploaded signature file
+        const signatureData = {
+            filename: req.file.filename,
+            originalName: req.file.originalname,
+            path: `/uploads/images/${req.file.filename}`,
+            size: req.file.size,
+            uploadedAt: new Date().toISOString(),
+            type: 'camera_signature'
+        };
+
+        // Update device with camera signature
+        const updatedDevice = await devicesDB.update(deviceId, {
+            cameraSignature: signatureData
+        });
+
+        sendSuccess(res, {
+            device: updatedDevice,
+            cameraSignature: signatureData
+        }, 'Camera signature uploaded successfully');
+    })
+);
+
+// DELETE /api/upload/camera-signature/:deviceId - Delete camera signature
+router.delete('/camera-signature/:deviceId',
+    idValidationRules(),
+    handleValidationErrors,
+    asyncHandler(async (req, res) => {
+        const deviceId = req.params.deviceId;
+        
+        // Check if device exists
+        const device = await devicesDB.findById(deviceId);
+        if (!device) {
+            return sendError(res, 'Device not found', 404);
+        }
+
+        if (!device.cameraSignature) {
+            return sendError(res, 'No camera signature found for this device', 404);
+        }
+
+        const signatureFilename = device.cameraSignature.filename;
+        
+        // Update device record to remove camera signature
+        const updatedDevice = await devicesDB.update(deviceId, {
+            cameraSignature: null
+        });
+
+        // Delete physical file
+        try {
+            const filePath = path.join('uploads', 'images', signatureFilename);
+            await fs.unlink(filePath);
+        } catch (error) {
+            console.error('Error deleting camera signature file:', error);
+            // Continue even if file deletion fails
+        }
+
+        sendSuccess(res, {
+            device: updatedDevice,
+            deletedSignature: signatureFilename
+        }, 'Camera signature deleted successfully');
+    })
+);
 
 module.exports = router;

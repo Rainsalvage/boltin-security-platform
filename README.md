@@ -1,223 +1,315 @@
 # 🛡️ BOLTIN Security Platform
 
-**The Ultimate Gadget Security & Protection System**
+**Ultimate Gadget Security & Protection System**
 
-![Boltin Security](https://img.shields.io/badge/Security-Platform-FFD700?style=for-the-badge&logo=shield&logoColor=black)
-![Node.js](https://img.shields.io/badge/Node.js-Express-black?style=for-the-badge&logo=node.js&logoColor=FFD700)
-![Status](https://img.shields.io/badge/Status-Production%20Ready-00FF00?style=for-the-badge)
+A comprehensive web application for device registration, tracking, and theft prevention with modern design and robust backend functionality.
 
-## 🌟 **Project Overview**
+## 🌟 Features
 
-Boltin is a comprehensive device security platform that provides advanced protection, registration, and recovery services for electronic devices. Built with a bold black and yellow theme, it offers a professional and compelling user experience.
+### 🔐 Core Security Features
+- **Device Registration** - Secure device registration with photo uploads
+- **Device Search** - Global database search for device verification
+- **Lost/Stolen Reporting** - Immediate incident reporting system
+- **Ownership Transfer** - Secure multi-step device ownership transfer
+- **Real-time Monitoring** - Live activity feed and statistics
 
-## ✨ **Key Features**
+### 🎨 Modern UI/UX
+- **Clean Design** - Black and yellow color scheme for security feel
+- **Responsive Layout** - Mobile-first design for all devices
+- **Interactive Elements** - Smooth animations and hover effects
+- **Accessibility** - WCAG compliant with keyboard navigation
+- **Professional Typography** - Inter font family for modern look
 
-### 🖼️ **Picture Upload System**
-- **Multi-image upload** during device registration
-- **Drag-and-drop interface** with visual feedback
-- **Image preview thumbnails** with removal functionality
-- **Real-time validation** and error handling
-- **Mobile-optimized** upload experience
+### 🔧 Technical Features
+- **RESTful API** - Complete backend with Express.js
+- **File Uploads** - Secure image upload with validation
+- **Data Validation** - Comprehensive input validation and sanitization
+- **Security Headers** - Helmet.js for enhanced security
+- **Rate Limiting** - Protection against abuse
+- **Error Handling** - Graceful error management
+- **JSON Database** - File-based storage for easy deployment
 
-### 🔄 **Device Ownership Transfer**
-- **3-step wizard** with progress indicators:
-  1. **Device Verification** - Current owner validation
-  2. **New Owner Information** - Transfer details
-  3. **Confirmation** - Legal agreement and summary
-- **Real-time form validation** with visual feedback
-- **Transfer summary** with all details
-- **Legal agreement checkbox** for authorization
-- **Secure verification process**
-
-### 🏠 **Compelling Homepage**
-- **Hero section** with animated trust badges
-- **Live activity feed** showing real-time registrations
-- **Customer testimonials** with 5-star ratings
-- **Interactive action cards** with feature highlights
-- **Professional statistics** with trend indicators
-- **Smooth animations** and hover effects
-
-### 🎨 **Design & UX**
-- **Bold black & yellow theme** for strong impression
-- **Fully responsive** design (desktop, tablet, mobile)
-- **Professional typography** with Inter font
-- **CSS Grid/Flexbox** layouts
-- **Smooth transitions** and animations
-- **Mobile hamburger menu**
-
-### 🤖 **Interactive Features**
-- **AI-powered chatbot** for user assistance
-- **Real-time device search** with status display
-- **Form validation** with visual feedback
-- **Toast notifications** for user actions
-- **Live statistics updates**
-
-## 🚀 **Getting Started**
+## 🚀 Quick Start
 
 ### Prerequisites
-- Node.js (v14 or higher)
-- npm or yarn package manager
+- Node.js (v16.0.0 or higher)
+- Modern web browser
+- Git (optional, for cloning)
 
 ### Installation
 
+1. **Download/Clone the repository**
+   ```bash
+   git clone https://github.com/adenlebobola/boltin-security-platform.git
+   cd boltin-security-platform
+   ```
+
+2. **Install dependencies**
+   ```bash
+   npm install
+   ```
+
+3. **Start the server**
+   ```bash
+   npm start
+   ```
+   
+   **Or use the Windows batch file:**
+   ```bash
+   ./start.bat
+   ```
+
+4. **Open your browser**
+   - Navigate to `http://localhost:3000`
+   - The frontend and API are now running!
+
+## 🌐 API Documentation
+
+### Base URL
+```
+http://localhost:3000/api
+```
+
+### Endpoints Overview
+
+#### Device Management
+- `GET /api/devices` - List all devices (paginated)
+- `POST /api/devices` - Register new device
+- `GET /api/devices/:id` - Get device by ID
+- `PUT /api/devices/:id` - Update device
+- `DELETE /api/devices/:id` - Delete device
+- `GET /api/devices/stats` - Get device statistics
+
+#### Search & Lookup
+- `GET /api/search/serial/:serial` - Search device by serial
+- `GET /api/search` - Advanced search with filters
+- `GET /api/search/statistics` - Search statistics
+
+#### Reports (Lost/Stolen)
+- `POST /api/reports` - Create new report
+- `GET /api/reports/:id` - Get report by ID
+- `PUT /api/reports/:id/status` - Update report status
+- `GET /api/reports/device/:serial` - Get reports for device
+
+#### Ownership Transfer
+- `POST /api/transfer/verify` - Verify device ownership
+- `POST /api/transfer` - Create transfer request
+- `POST /api/transfer/:id/complete` - Complete transfer
+- `GET /api/transfer/device/:serial` - Get transfer history
+
+#### File Upload
+- `POST /api/upload/device-images/:deviceId` - Upload device images
+- `DELETE /api/upload/device-images/:deviceId/:filename` - Delete image
+
+### Example API Calls
+
+#### Register a Device
 ```bash
-# Clone the repository
-git clone https://github.com/yourusername/boltin-security-platform.git
-
-# Navigate to project directory
-cd boltin-security-platform
-
-# Install dependencies
-npm install
-
-# Start the development server
-npm start
+curl -X POST http://localhost:3000/api/devices \
+  -H "Content-Type: application/json" \
+  -d '{
+    "ownerName": "John Doe",
+    "contact": "john@example.com",
+    "deviceType": "smartphone",
+    "brand": "Apple",
+    "model": "iPhone 14",
+    "serialNumber": "ABC123456",
+    "description": "My primary phone"
+  }'
 ```
 
-### Running the Application
-
+#### Search for a Device
 ```bash
-# Development mode with auto-restart
-npm run dev
-
-# Production mode
-npm start
-
-# Open in browser
-start chrome http://localhost:3000
+curl -X GET http://localhost:3000/api/search/serial/ABC123456
 ```
 
-## 📁 **Project Structure**
+#### Report Lost Device
+```bash
+curl -X POST http://localhost:3000/api/reports \
+  -H "Content-Type: application/json" \
+  -d '{
+    "serialNumber": "ABC123456",
+    "ownerContact": "john@example.com",
+    "reportType": "lost",
+    "incidentDate": "2025-01-15",
+    "location": "Downtown Lagos",
+    "description": "Lost my phone at the mall"
+  }'
+```
+
+## 📁 Project Structure
 
 ```
-boltin-app/
-├── backend/
-│   ├── server.js          # Express server
-│   └── api/
-│       ├── chatbot.js     # AI chatbot logic
-│       ├── gadgets.js     # Device management
-│       └── users.js       # User management
-├── frontend/
-│   ├── index.html         # Main HTML file
+boltin-security-platform/
+├── frontend/                 # Frontend assets
 │   ├── css/
-│   │   └── styles.css     # Black & yellow theme
-│   └── js/
-│       └── main.js        # Frontend functionality
-├── database/
-│   └── db.json           # JSON database
-├── package.json          # Dependencies
-├── .gitignore           # Git ignore rules
-└── README.md            # Project documentation
+│   │   └── styles.css       # Modern UI styles
+│   ├── js/
+│   │   └── main.js          # Frontend functionality
+│   └── index.html           # Main HTML file
+├── routes/                  # API routes
+│   ├── devices.js           # Device management
+│   ├── search.js            # Search functionality
+│   ├── reports.js           # Lost/stolen reports
+│   ├── transfer.js          # Ownership transfer
+│   └── upload.js            # File uploads
+├── utils/                   # Utilities
+│   ├── database.js          # JSON database
+│   ├── validators.js        # Input validation
+│   └── middleware.js        # Express middleware
+├── data/                    # JSON data files
+│   ├── devices.json
+│   ├── reports.json
+│   └── transfers.json
+├── uploads/                 # Uploaded files
+│   └── images/
+├── server.js                # Main server file
+├── package.json             # Dependencies
+├── .env                     # Environment config
+└── README.md                # This file
 ```
 
-## 🎯 **Core Functionalities**
+## 🎯 Key Features in Detail
 
 ### Device Registration
-- Complete device information capture
-- Multi-image upload with preview
-- Real-time validation
-- Secure data storage
+- Comprehensive device information capture
+- Multi-image upload support
+- Automatic serial number validation
+- Owner verification system
 
-### Device Search & Verification
-- Serial/IMEI number lookup
-- Status verification (registered/stolen)
-- Visual status indicators
-- Quick registration option for unregistered devices
+### Security Search
+- Public device lookup by serial number
+- Status reporting (safe, lost, stolen)
+- Anonymous search capabilities
+- Real-time database queries
+
+### Lost/Stolen Reporting
+- Immediate incident reporting
+- Police report number integration
+- Location and timeline tracking
+- Automatic device flagging
 
 ### Ownership Transfer
-- Secure 3-step verification process
-- Legal compliance features
-- Email notifications to both parties
-- Transfer history tracking
+- 3-step verification process
+- Legal agreement confirmation
+- Transfer code generation
+- Complete ownership history
 
-### Security Features
-- Device theft reporting
-- Recovery assistance
-- Owner verification
-- Secure data handling
+### File Management
+- Secure image uploads
+- Multiple file support
+- Automatic cleanup
+- File validation and security
 
-## 🛠️ **Technology Stack**
+## 🛠️ Configuration
 
-- **Backend**: Node.js, Express.js
-- **Frontend**: Vanilla JavaScript, HTML5, CSS3
-- **Database**: JSON file-based storage
-- **Icons**: Font Awesome 6.0
-- **Fonts**: Inter (Google Fonts)
-- **Styling**: CSS Grid, Flexbox, Custom Properties
+### Environment Variables
+Create a `.env` file with:
 
-## 🎨 **Design Specifications**
-
-### Color Palette
-- **Primary**: Black (#000000)
-- **Secondary**: Bright Gold (#FFD700)
-- **Accent**: Bright Yellow (#FFFF00)
-- **Background**: Black gradients (#1a1a1a)
-
-### Typography
-- **Font Family**: Inter (300-900 weights)
-- **Headings**: Bold, uppercase, letter-spacing
-- **Body**: Medium weight, high contrast
-
-## 📱 **Mobile Responsiveness**
-
-- **Breakpoints**: 768px, 480px
-- **Mobile menu**: Hamburger navigation
-- **Touch-friendly**: Large buttons and inputs
-- **Optimized layouts**: Grid to single column
-
-## 🔧 **Development Commands**
-
-```bash
-# Install dependencies
-npm install
-
-# Start development server
-npm run dev
-
-# Start production server
-npm start
-
-# Lint code (if configured)
-npm run lint
+```env
+NODE_ENV=development
+PORT=3000
+JWT_SECRET=your-super-secret-jwt-key
+CORS_ORIGIN=http://localhost:3000
+MAX_FILE_SIZE=5242880
+UPLOAD_DIR=uploads
 ```
 
-## 🌐 **Browser Support**
+### Security Features
+- Helmet.js security headers
+- CORS protection
+- Rate limiting
+- Input validation and sanitization
+- File upload restrictions
+- XSS protection
 
-- Chrome (recommended)
-- Firefox
-- Safari
-- Edge
+## 📱 Frontend Features
 
-## 📄 **License**
+### Modern UI Components
+- Responsive navigation with mobile hamburger menu
+- Interactive device registration form
+- Real-time search with instant results
+- Multi-step transfer wizard
+- Modal dialogs for reports
+- Toast notifications for feedback
+- Live activity feed
+- Animated statistics counters
 
-This project is licensed under the MIT License - see the LICENSE file for details.
+### Form Validation
+- Real-time input validation
+- Visual feedback (valid/invalid states)
+- Comprehensive error messages
+- Client-side and server-side validation
 
-## 🤝 **Contributing**
+### User Experience
+- Smooth scroll behavior
+- Loading states and animations
+- Keyboard shortcuts support
+- Accessibility features
+- Mobile-optimized interface
+
+## 🔒 Security Considerations
+
+### Data Protection
+- Input sanitization and validation
+- SQL injection prevention (N/A - using JSON files)
+- XSS protection
+- CSRF protection headers
+- Secure file upload handling
+
+### Privacy
+- Owner information protection in public searches
+- Contact masking for security
+- Secure transfer verification
+- Anonymous reporting options
+
+## 🚀 Deployment
+
+### Local Development
+```bash
+npm run dev  # Start with nodemon for auto-restart
+```
+
+### Production
+```bash
+npm start    # Start production server
+```
+
+### Hosting Options
+- **Vercel** - Simple deployment with git integration
+- **Heroku** - Full-stack hosting with add-ons
+- **DigitalOcean** - VPS hosting for full control
+- **Netlify** - Frontend hosting (requires separate backend)
+
+## 🤝 Contributing
 
 1. Fork the repository
-2. Create your feature branch (`git checkout -b feature/AmazingFeature`)
-3. Commit your changes (`git commit -m 'Add some AmazingFeature'`)
-4. Push to the branch (`git push origin feature/AmazingFeature`)
+2. Create a feature branch (`git checkout -b feature/amazing-feature`)
+3. Commit your changes (`git commit -m 'Add amazing feature'`)
+4. Push to the branch (`git push origin feature/amazing-feature`)
 5. Open a Pull Request
 
-## 📞 **Support**
+## 📄 License
 
-For support and questions:
-- **Email**: security@boltin.com
-- **24/7 Hotline**: Available for emergencies
-- **Documentation**: Check this README and inline comments
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
-## 🏆 **Features Roadmap**
+## 👨‍💻 Author
 
-- [ ] Email notification system
-- [ ] Advanced analytics dashboard
-- [ ] Mobile app (React Native)
-- [ ] Integration with law enforcement
-- [ ] Blockchain verification
-- [ ] Multi-language support
+**adenlebobola**
+- GitHub: [@adenlebobola](https://github.com/adenlebobola)
+
+## 🙏 Acknowledgments
+
+- Express.js for the robust backend framework
+- Multer for file upload handling
+- Helmet.js for security headers
+- Inter font family for modern typography
+- Font Awesome for beautiful icons
+
+## 📞 Support
+
+For support, email security@boltin.com or create an issue on GitHub.
 
 ---
 
-**Built with ❤️ for device security and peace of mind**
-
-*Protecting your digital life, one device at a time.*
+**Built with ❤️ for device security and theft prevention**

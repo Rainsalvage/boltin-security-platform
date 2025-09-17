@@ -25,21 +25,25 @@ function initializeApp() {
     }
 }
 
-// Load statistics from API
+// Load statistics from backend API
 async function loadStats() {
     try {
-        const response = await fetch('/api/gadgets');
+        const response = await fetch('/api/devices/stats');
         if (response.ok) {
-            const data = await response.json();
-            registeredDevices = data.data ? data.data.length : 0;
-            recoveredDevices = Math.floor(registeredDevices * 0.85);
+            const result = await response.json();
+            const stats = result.data;
+            
+            registeredDevices = stats.totalDevices || 0;
+            recoveredDevices = stats.safeDevices || 0;
             
             // Update counters
             document.getElementById('registered-count').textContent = registeredDevices;
             document.getElementById('recovered-count').textContent = recoveredDevices;
+        } else {
+            throw new Error('Failed to load stats');
         }
     } catch (error) {
-        console.log('📊 Loading demo statistics...');
+        console.log('📊 Loading demo statistics...', error);
         registeredDevices = 1247;
         recoveredDevices = 1089;
         document.getElementById('registered-count').textContent = registeredDevices;
@@ -106,10 +110,138 @@ function showSearch() {
     }, 500);
 }
 
-// Show lost device report
+// Show lost device report form
 function showLostReport() {
-    showSearch();
-    showToast('🚨 Use the search function to check your device status first', 'info');
+    showReportForm();
+}
+
+// Show report form with optional pre-filled serial
+function showReportForm(serialNumber = '') {
+    // Create report form modal
+    const modal = document.createElement('div');
+    modal.className = 'report-modal';
+    modal.innerHTML = `
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2><i class="fas fa-exclamation-triangle"></i> Report Lost/Stolen Device</h2>
+                <button class="close-modal" onclick="closeReportModal()">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <form id="report-form" class="report-form">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="report-serial">Device Serial/IMEI Number *</label>
+                        <input type="text" id="report-serial" name="serialNumber" value="${serialNumber}" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="report-contact">Your Contact *</label>
+                        <input type="text" id="report-contact" name="ownerContact" placeholder="Email or Phone" required>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="report-type">Report Type *</label>
+                        <select id="report-type" name="reportType" required>
+                            <option value="">Select Type</option>
+                            <option value="lost">Lost</option>
+                            <option value="stolen">Stolen</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="incident-date">Incident Date *</label>
+                        <input type="date" id="incident-date" name="incidentDate" required>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="incident-location">Location *</label>
+                    <input type="text" id="incident-location" name="location" placeholder="Where did this happen?" required>
+                </div>
+                <div class="form-group">
+                    <label for="incident-description">Description *</label>
+                    <textarea id="incident-description" name="description" rows="4" placeholder="Please describe what happened..." required></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="police-report">Police Report Number (Optional)</label>
+                    <input type="text" id="police-report" name="policeReportNumber" placeholder="If you filed a police report">
+                </div>
+                <button type="submit" class="submit-button">
+                    <i class="fas fa-exclamation-triangle"></i>
+                    Submit Report
+                </button>
+            </form>
+        </div>
+    `;
+    
+    document.body.appendChild(modal);
+    
+    // Setup form submission
+    document.getElementById('report-form').addEventListener('submit', handleReportSubmission);
+    
+    // Focus on first input
+    setTimeout(() => {
+        if (!serialNumber) {
+            document.getElementById('report-serial').focus();
+        } else {
+            document.getElementById('report-contact').focus();
+        }
+    }, 100);
+}
+
+// Handle report submission
+async function handleReportSubmission(e) {
+    e.preventDefault();
+    
+    const formData = new FormData(e.target);
+    const reportData = {
+        serialNumber: formData.get('serialNumber'),
+        ownerContact: formData.get('ownerContact'),
+        reportType: formData.get('reportType'),
+        incidentDate: formData.get('incidentDate'),
+        location: formData.get('location'),
+        description: formData.get('description'),
+        policeReportNumber: formData.get('policeReportNumber')
+    };
+    
+    const submitButton = e.target.querySelector('.submit-button');
+    const originalText = submitButton.innerHTML;
+    submitButton.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Submitting Report...';
+    submitButton.disabled = true;
+    
+    try {
+        const response = await fetch('/api/reports', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(reportData)
+        });
+        
+        const result = await response.json();
+        
+        if (result.success) {
+            const report = result.data.report;
+            showToast('✅ Report submitted successfully!', 'success');
+            showToast(`📝 Report Number: ${report.reportNumber}`, 'info');
+            closeReportModal();
+        } else {
+            showToast(`❌ ${result.error || 'Report submission failed'}`, 'error');
+        }
+    } catch (error) {
+        showToast('❌ Report submission failed. Please try again.', 'error');
+        console.error('Report submission error:', error);
+    } finally {
+        submitButton.innerHTML = originalText;
+        submitButton.disabled = false;
+    }
+}
+
+// Close report modal
+function closeReportModal() {
+    const modal = document.querySelector('.report-modal');
+    if (modal) {
+        modal.remove();
+    }
 }
 
 // Show transfer section
@@ -143,18 +275,11 @@ function setupRegistrationForm() {
     }
 }
 
-// Handle device registration
+// Handle device registration with backend API
 async function handleRegistration(e) {
     e.preventDefault();
     
     const formData = new FormData(e.target);
-    
-    // Collect image data
-    const images = [];
-    const imageElements = document.querySelectorAll('#image-preview-container .image-preview img');
-    imageElements.forEach(img => {
-        images.push(img.src);
-    });
     
     const deviceData = {
         ownerName: formData.get('ownerName'),
@@ -163,8 +288,7 @@ async function handleRegistration(e) {
         brand: formData.get('brand'),
         model: formData.get('model'),
         serialNumber: formData.get('serialNumber'),
-        description: formData.get('description'),
-        images: images
+        description: formData.get('description')
     };
     
     if (!validateRegistrationForm(deviceData)) {
@@ -177,7 +301,8 @@ async function handleRegistration(e) {
     submitButton.disabled = true;
     
     try {
-        const response = await fetch('/api/gadgets/register', {
+        // First register the device
+        const response = await fetch('/api/devices', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -188,10 +313,18 @@ async function handleRegistration(e) {
         const result = await response.json();
         
         if (result.success) {
+            const deviceId = result.data.device.id;
+            
+            // Upload images if any
+            const imageFiles = document.getElementById('device-images').files;
+            if (imageFiles.length > 0) {
+                await uploadDeviceImages(deviceId, imageFiles);
+            }
+            
             showToast('✅ Device registered successfully!', 'success');
             e.target.reset();
             
-            // Clear uploaded images
+            // Clear uploaded images preview
             const previewContainer = document.getElementById('image-preview-container');
             if (previewContainer) {
                 previewContainer.innerHTML = '';
@@ -200,7 +333,7 @@ async function handleRegistration(e) {
             loadStats();
             localStorage.setItem('boltin_user', 'true');
         } else {
-            showToast(`❌ ${result.message}`, 'error');
+            showToast(`❌ ${result.error || 'Registration failed'}`, 'error');
         }
     } catch (error) {
         showToast('❌ Registration failed. Please try again.', 'error');
@@ -239,7 +372,7 @@ function setupSearchForm() {
     }
 }
 
-// Handle device search
+// Handle device search with backend API
 async function handleSearch(e) {
     e.preventDefault();
     
@@ -256,10 +389,10 @@ async function handleSearch(e) {
     submitButton.disabled = true;
     
     try {
-        const response = await fetch(`/api/gadgets/search?serial=${encodeURIComponent(serial)}`);
+        const response = await fetch(`/api/search/serial/${encodeURIComponent(serial)}`);
         const result = await response.json();
         
-        displaySearchResults(result);
+        displaySearchResults(result.data, serial);
     } catch (error) {
         showToast('❌ Search failed. Please try again.', 'error');
         console.error('Search error:', error);
@@ -269,41 +402,74 @@ async function handleSearch(e) {
     }
 }
 
-// Display search results
-function displaySearchResults(result) {
+// Display search results with enhanced backend data
+function displaySearchResults(result, searchedSerial) {
     const resultsContainer = document.getElementById('search-results');
     
-    if (result.success && result.data) {
-        const device = result.data;
-        const statusClass = device.isLost ? 'status-lost' : 'status-safe';
-        const statusIcon = device.isLost ? 'fas fa-exclamation-triangle' : 'fas fa-shield-alt';
-        const statusText = device.isLost ? 'LOST/STOLEN' : 'REGISTERED & SAFE';
+    if (result.found && result.device) {
+        const device = result.device;
+        const status = result.status;
+        const statusClass = status.status === 'stolen' ? 'status-lost' : 
+                           status.status === 'lost' ? 'status-warning' : 'status-safe';
+        const statusIcon = status.status === 'stolen' ? 'fas fa-skull-crossbones' : 
+                          status.status === 'lost' ? 'fas fa-exclamation-triangle' : 'fas fa-shield-alt';
         
         resultsContainer.innerHTML = `
             <div class="search-result ${statusClass}">
                 <div class="result-header">
                     <i class="${statusIcon}"></i>
-                    <span class="status-text">${statusText}</span>
+                    <span class="status-text">${status.message}</span>
                 </div>
                 <div class="device-info">
                     <h3>${device.brand} ${device.model}</h3>
-                    <p><strong>Owner:</strong> ${device.ownerName}</p>
                     <p><strong>Device Type:</strong> ${device.deviceType}</p>
-                    ${device.isLost ? '<p class="warning">⚠️ This device has been reported as lost or stolen!</p>' : ''}
+                    <p><strong>Serial:</strong> ${device.serialNumber}</p>
+                    <p><strong>Owner:</strong> ${device.ownerInitials || 'Protected'}</p>
+                    <p><strong>Registered:</strong> ${new Date(device.registeredAt).toLocaleDateString()}</p>
+                    <p><strong>Verified:</strong> ${device.verified ? '✅ Yes' : '⚠️ Pending'}</p>
+                    ${status.reportDate ? `<p><strong>Report Date:</strong> ${new Date(status.reportDate).toLocaleDateString()}</p>` : ''}
+                    ${status.location ? `<p><strong>Last Location:</strong> ${status.location}</p>` : ''}
+                </div>
+                <div class="device-actions">
+                    ${status.status !== 'safe' ? 
+                        '<p class="warning">⚠️ Contact local authorities if you have information about this device!</p>' : 
+                        '<p class="safe-notice">✅ This device is safely registered and has no reports against it.</p>'
+                    }
                 </div>
             </div>
         `;
     } else {
+        // Device not found or reports only
+        let statusInfo = '';
+        if (result.status) {
+            const status = result.status;
+            const statusClass = status.status === 'stolen' ? 'status-lost' : 
+                               status.status === 'lost' ? 'status-warning' : 'status-unknown';
+            
+            statusInfo = `
+                <div class="status-warning ${statusClass}">
+                    <h4>${status.message}</h4>
+                    ${status.reportDate ? `<p><strong>Report Date:</strong> ${new Date(status.reportDate).toLocaleDateString()}</p>` : ''}
+                    ${status.location ? `<p><strong>Location:</strong> ${status.location}</p>` : ''}
+                </div>
+            `;
+        }
+        
         resultsContainer.innerHTML = `
             <div class="search-result status-unknown">
                 <div class="result-header">
                     <i class="fas fa-question-circle"></i>
-                    <span class="status-text">DEVICE NOT FOUND</span>
+                    <span class="status-text">DEVICE NOT REGISTERED</span>
                 </div>
+                ${statusInfo}
+                <p>Serial: <strong>${searchedSerial}</strong></p>
                 <p>This device is not registered in our database.</p>
                 <div class="action-buttons">
                     <button class="register-button" onclick="showRegistration()">
                         <i class="fas fa-plus"></i> Register This Device
+                    </button>
+                    <button class="report-button" onclick="showReportForm('${searchedSerial}')">
+                        <i class="fas fa-exclamation-triangle"></i> Report Lost/Stolen
                     </button>
                 </div>
             </div>
@@ -422,7 +588,7 @@ async function handleChatMessage(e) {
     }
 }
 
-// Image Upload Functions
+// Image Upload Functions with backend integration
 function triggerImageUpload() {
     const fileInput = document.getElementById('device-images');
     fileInput.click();
@@ -452,6 +618,33 @@ function handleImageUpload(event) {
     
     // Clear the file input to allow re-uploading the same file
     event.target.value = '';
+}
+
+// Upload device images to backend
+async function uploadDeviceImages(deviceId, files) {
+    const formData = new FormData();
+    
+    for (let i = 0; i < files.length; i++) {
+        formData.append('deviceImages', files[i]);
+    }
+    
+    try {
+        const response = await fetch(`/api/upload/device-images/${deviceId}`, {
+            method: 'POST',
+            body: formData
+        });
+        
+        const result = await response.json();
+        
+        if (result.success) {
+            showToast(`📸 ${result.data.uploadedImages.length} image(s) uploaded successfully`, 'success');
+        } else {
+            showToast('⚠️ Image upload failed', 'warning');
+        }
+    } catch (error) {
+        console.error('Image upload error:', error);
+        showToast('⚠️ Image upload failed', 'warning');
+    }
 }
 
 function removeImage(button) {
@@ -543,11 +736,13 @@ function validateTransferStep(step) {
                 return false;
             }
             
-            return true;
+            // Verify device ownership before proceeding
+            return verifyTransferDevice();
             
         case 2:
             const newOwnerName = document.getElementById('new-owner-name').value.trim();
             const newOwnerContact = document.getElementById('new-owner-contact').value.trim();
+            const transferDate = document.getElementById('transfer-date').value;
             
             if (!newOwnerName || newOwnerName.length < 2) {
                 showToast('❌ Please enter a valid new owner name', 'error');
@@ -556,6 +751,21 @@ function validateTransferStep(step) {
             
             if (!newOwnerContact || newOwnerContact.length < 5) {
                 showToast('❌ Please enter a valid new owner contact', 'error');
+                return false;
+            }
+            
+            if (!transferDate) {
+                showToast('❌ Please select a transfer date', 'error');
+                return false;
+            }
+            
+            // Check if transfer date is not in the past
+            const selectedDate = new Date(transferDate);
+            const today = new Date();
+            today.setHours(0, 0, 0, 0);
+            
+            if (selectedDate < today) {
+                showToast('❌ Transfer date cannot be in the past', 'error');
                 return false;
             }
             
@@ -579,6 +789,45 @@ function resetTransferForm() {
     showToast('📋 Transfer form has been reset', 'info');
 }
 
+// Transfer verification with backend API
+async function verifyTransferDevice() {
+    const serialNumber = document.getElementById('transfer-device-serial').value.trim();
+    const currentOwnerContact = document.getElementById('current-owner-contact').value.trim();
+    
+    if (!serialNumber || !currentOwnerContact) {
+        showToast('❌ Please enter both serial number and contact information', 'error');
+        return false;
+    }
+    
+    try {
+        const response = await fetch('/api/transfer/verify', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                serialNumber,
+                currentOwnerContact
+            })
+        });
+        
+        const result = await response.json();
+        
+        if (result.success && result.data.verified) {
+            showToast('✅ Device ownership verified! You can proceed with the transfer.', 'success');
+            return true;
+        } else {
+            showToast(`❌ ${result.error || 'Verification failed'}`, 'error');
+            return false;
+        }
+    } catch (error) {
+        showToast('❌ Verification failed. Please try again.', 'error');
+        console.error('Transfer verification error:', error);
+        return false;
+    }
+}
+
+// Submit transfer with backend API
 async function submitTransfer() {
     // Validate all steps
     for (let i = 1; i <= 2; i++) {
@@ -589,32 +838,67 @@ async function submitTransfer() {
         }
     }
     
+    // Check agreement
+    const agreementChecked = document.getElementById('transfer-agreement').checked;
+    if (!agreementChecked) {
+        showToast('❌ Please confirm the transfer agreement', 'error');
+        return;
+    }
+    
     const transferData = {
         currentOwnerContact: document.getElementById('current-owner-contact').value,
-        deviceSerial: document.getElementById('transfer-device-serial').value,
+        serialNumber: document.getElementById('transfer-device-serial').value,
+        transferReason: document.getElementById('transfer-reason').value,
         newOwnerName: document.getElementById('new-owner-name').value,
         newOwnerContact: document.getElementById('new-owner-contact').value,
-        transferReason: document.getElementById('transfer-reason').value,
-        timestamp: new Date().toISOString()
+        newOwnerEmail: document.getElementById('new-owner-email').value,
+        transferDate: document.getElementById('transfer-date').value,
+        transferNotes: document.getElementById('transfer-notes').value
     };
     
-    const submitButton = document.querySelector('.submit-button');
+    const submitButton = document.querySelector('.transfer-submit-btn');
     const originalText = submitButton.innerHTML;
     submitButton.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Processing Transfer...';
     submitButton.disabled = true;
     
     try {
-        // Simulate API call for transfer
-        await new Promise(resolve => setTimeout(resolve, 2000));
+        // Create transfer request
+        const response = await fetch('/api/transfer', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(transferData)
+        });
         
-        showToast('✅ Device ownership transfer initiated successfully!', 'success');
-        showToast('📧 Verification emails sent to both parties', 'info');
+        const result = await response.json();
         
-        // Reset form and go back to step 1
-        resetTransferForm();
-        
-        // Log transfer attempt
-        console.log('Transfer submitted:', transferData);
+        if (result.success) {
+            const transfer = result.data.transfer;
+            
+            // Complete the transfer
+            const completeResponse = await fetch(`/api/transfer/${transfer.id}/complete`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ agreement: true })
+            });
+            
+            const completeResult = await completeResponse.json();
+            
+            if (completeResult.success) {
+                showToast('✅ Device ownership transfer completed successfully!', 'success');
+                showToast(`📧 Transfer Code: ${transfer.transferCode}`, 'info');
+                
+                // Reset form and go back to step 1
+                resetTransferForm();
+            } else {
+                showToast(`❌ ${completeResult.error || 'Transfer completion failed'}`, 'error');
+            }
+        } else {
+            showToast(`❌ ${result.error || 'Transfer failed'}`, 'error');
+        }
         
     } catch (error) {
         showToast('❌ Transfer failed. Please try again.', 'error');
@@ -622,7 +906,6 @@ async function submitTransfer() {
     } finally {
         submitButton.innerHTML = originalText;
         submitButton.disabled = false;
-        console.error('Chat error:', error);
     }
 }
 

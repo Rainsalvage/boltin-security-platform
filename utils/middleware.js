@@ -2,6 +2,10 @@ const multer = require('multer');
 const path = require('path');
 const fs = require('fs').promises;
 const { v4: uuidv4 } = require('uuid');
+const jwt = require('jsonwebtoken');
+
+// JWT Secret
+const JWT_SECRET = process.env.JWT_SECRET || 'boltin-super-secret-key-2025';
 
 // Configure multer for file uploads
 const storage = multer.diskStorage({
@@ -83,6 +87,30 @@ const handleMulterError = (error, req, res, next) => {
 // Async wrapper for route handlers
 const asyncHandler = (fn) => (req, res, next) => {
     Promise.resolve(fn(req, res, next)).catch(next);
+};
+
+// Authentication middleware
+const authenticateToken = (req, res, next) => {
+    const authHeader = req.headers['authorization'];
+    const token = authHeader && authHeader.split(' ')[1]; // Bearer TOKEN
+
+    if (!token) {
+        return res.status(401).json({
+            success: false,
+            error: 'Access token is required'
+        });
+    }
+
+    jwt.verify(token, JWT_SECRET, (err, user) => {
+        if (err) {
+            return res.status(403).json({
+                success: false,
+                error: 'Invalid or expired token'
+            });
+        }
+        req.user = user;
+        next();
+    });
 };
 
 // Authentication middleware (simplified for demo)
@@ -184,6 +212,7 @@ module.exports = {
     handleMulterError,
     asyncHandler,
     authenticate,
+    authenticateToken,
     logRequest,
     cleanupFiles,
     sendSuccess,

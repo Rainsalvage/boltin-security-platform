@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const { devicesDB, reportsDB } = require('../utils/database');
-const { authenticateToken } = require('./auth');
+const { authenticateToken } = require('../utils/middleware');
 const { 
     deviceValidationRules, 
     handleValidationErrors, 

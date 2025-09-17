@@ -6,6 +6,9 @@ let recoveredDevices = 0;
 let currentTransferStep = 1;
 let currentUser = null;
 let authToken = null;
+let sophisticatedAnimations = true;
+let intersectionObserver = null;
+let scrollProgressIndicator = null;
 
 // DOM Content Loaded
 document.addEventListener('DOMContentLoaded', function() {
@@ -17,6 +20,7 @@ document.addEventListener('DOMContentLoaded', function() {
     setupScrollIndicator();
     setupMobileEnhancements();
     checkAuthStatus();
+    initializeSophisticatedFeatures();
 });
 
 // Initialize the application
@@ -3868,4 +3872,412 @@ async function submitDashboardTransfer() {
         submitButton.innerHTML = originalText;
         submitButton.disabled = false;
     }
+}
+
+// =============================================================================
+// SOPHISTICATED FEATURES AND ENHANCEMENTS
+// =============================================================================
+
+// Initialize sophisticated features
+function initializeSophisticatedFeatures() {
+    console.log('✨ Initializing sophisticated features...');
+    
+    // Add sophisticated loading animation
+    addSophisticatedLoadingOverlay();
+    
+    // Initialize scroll-based animations
+    initializeScrollAnimations();
+    
+    // Setup cursor enhancement for premium experience
+    setupCursorEnhancement();
+    
+    // Initialize ambient background effects
+    initializeAmbientEffects();
+    
+    // Setup magnetic buttons
+    setupMagneticButtons();
+    
+    // Initialize parallax effects
+    setupParallaxEffects();
+    
+    // Setup sophisticated interactions
+    setupSophisticatedInteractions();
+    
+    // Remove loading overlay after initialization
+    setTimeout(() => {
+        removeSophisticatedLoadingOverlay();
+    }, 1500);
+}
+
+// Add sophisticated loading overlay
+function addSophisticatedLoadingOverlay() {
+    const overlay = document.createElement('div');
+    overlay.id = 'sophisticated-loading';
+    overlay.innerHTML = `
+        <div class="loading-container fade-in">
+            <div class="loading-spinner"></div>
+            <div class="loading-text">Initializing BOLTIN Security Platform...</div>
+            <div class="loading-progress">
+                <div class="progress-bar" id="loading-progress-bar"></div>
+            </div>
+        </div>
+    `;
+    
+    // Add styles
+    const style = document.createElement('style');
+    style.textContent = `
+        #sophisticated-loading {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.95);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 10000;
+            animation: fadeIn 0.3s ease;
+        }
+        
+        .loading-container {
+            text-align: center;
+            color: white;
+        }
+        
+        .loading-text {
+            margin: 20px 0;
+            font-size: 1.1rem;
+            color: var(--luxury-gold);
+        }
+        
+        .loading-progress {
+            width: 300px;
+            height: 4px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 2px;
+            overflow: hidden;
+            margin: 20px auto;
+        }
+        
+        .progress-bar {
+            height: 100%;
+            background: linear-gradient(90deg, var(--luxury-gold), var(--bright-gold));
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+    `;
+    document.head.appendChild(style);
+    
+    document.body.appendChild(overlay);
+    
+    // Animate progress bar
+    const progressBar = document.getElementById('loading-progress-bar');
+    let progress = 0;
+    const progressInterval = setInterval(() => {
+        progress += Math.random() * 15;
+        if (progress >= 100) {
+            progress = 100;
+            clearInterval(progressInterval);
+        }
+        progressBar.style.width = progress + '%';
+    }, 100);
+}
+
+// Remove sophisticated loading overlay
+function removeSophisticatedLoadingOverlay() {
+    const overlay = document.getElementById('sophisticated-loading');
+    if (overlay) {
+        overlay.style.animation = 'fadeOut 0.5s ease forwards';
+        setTimeout(() => {
+            overlay.remove();
+        }, 500);
+    }
+}
+
+// Initialize sophisticated scroll-based animations
+function initializeScrollAnimations() {
+    const observerOptions = {
+        threshold: [0.1],
+        rootMargin: '-50px 0px -50px 0px'
+    };
+    
+    intersectionObserver = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                const element = entry.target;
+                
+                // Add appropriate animation based on element type
+                if (element.classList.contains('card')) {
+                    element.classList.add('fade-in-up');
+                } else if (element.classList.contains('action-card')) {
+                    element.classList.add('scale-in');
+                } else {
+                    element.classList.add('fade-in');
+                }
+                
+                // Stop observing once animated
+                intersectionObserver.unobserve(element);
+            }
+        });
+    }, observerOptions);
+    
+    // Observe elements for animation
+    const animatableElements = document.querySelectorAll('.card, .action-card, .testimonial-card, .feature-item');
+    animatableElements.forEach(el => {
+        intersectionObserver.observe(el);
+    });
+}
+
+// Setup cursor enhancement
+function setupCursorEnhancement() {
+    const cursor = document.createElement('div');
+    cursor.id = 'custom-cursor';
+    cursor.innerHTML = '<div class="cursor-dot"></div><div class="cursor-ring"></div>';
+    
+    const style = document.createElement('style');
+    style.textContent = `
+        #custom-cursor {
+            position: fixed;
+            top: 0;
+            left: 0;
+            pointer-events: none;
+            z-index: 9999;
+            mix-blend-mode: difference;
+        }
+        
+        .cursor-dot {
+            width: 6px;
+            height: 6px;
+            background: var(--luxury-gold);
+            border-radius: 50%;
+            position: absolute;
+            transform: translate(-50%, -50%);
+            transition: all 0.1s ease;
+        }
+        
+        .cursor-ring {
+            width: 30px;
+            height: 30px;
+            border: 2px solid var(--luxury-gold);
+            border-radius: 50%;
+            position: absolute;
+            transform: translate(-50%, -50%);
+            transition: all 0.3s ease;
+            opacity: 0.5;
+        }
+        
+        .cursor-hover .cursor-ring {
+            width: 50px;
+            height: 50px;
+            opacity: 1;
+        }
+    `;
+    document.head.appendChild(style);
+    document.body.appendChild(cursor);
+    
+    // Only show on desktop
+    if (window.innerWidth > 768) {
+        document.addEventListener('mousemove', (e) => {
+            cursor.style.left = e.clientX + 'px';
+            cursor.style.top = e.clientY + 'px';
+        });
+        
+        // Add hover effects
+        const hoverElements = document.querySelectorAll('button, a, .card, input, .action-card');
+        hoverElements.forEach(el => {
+            el.addEventListener('mouseenter', () => cursor.classList.add('cursor-hover'));
+            el.addEventListener('mouseleave', () => cursor.classList.remove('cursor-hover'));
+        });
+    }
+}
+
+// Initialize ambient background effects
+function initializeAmbientEffects() {
+    const ambient = document.createElement('div');
+    ambient.id = 'ambient-effects';
+    ambient.innerHTML = `
+        <div class="floating-particle" style="--delay: 0s; --duration: 20s;"></div>
+        <div class="floating-particle" style="--delay: 5s; --duration: 25s;"></div>
+        <div class="floating-particle" style="--delay: 10s; --duration: 30s;"></div>
+        <div class="floating-particle" style="--delay: 15s; --duration: 22s;"></div>
+    `;
+    
+    const style = document.createElement('style');
+    style.textContent = `
+        #ambient-effects {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: -1;
+            overflow: hidden;
+        }
+        
+        .floating-particle {
+            position: absolute;
+            width: 4px;
+            height: 4px;
+            background: var(--luxury-gold);
+            border-radius: 50%;
+            opacity: 0.3;
+            animation: float var(--duration, 20s) var(--delay, 0s) infinite linear;
+        }
+        
+        @keyframes float {
+            0% {
+                transform: translateY(100vh) translateX(0) rotate(0deg);
+                opacity: 0;
+            }
+            10% {
+                opacity: 0.3;
+            }
+            90% {
+                opacity: 0.3;
+            }
+            100% {
+                transform: translateY(-100px) translateX(100px) rotate(360deg);
+                opacity: 0;
+            }
+        }
+    `;
+    document.head.appendChild(style);
+    document.body.appendChild(ambient);
+}
+
+// Setup magnetic buttons
+function setupMagneticButtons() {
+    const magneticElements = document.querySelectorAll('.btn, .cta-button, .action-button');
+    
+    magneticElements.forEach(el => {
+        el.addEventListener('mousemove', (e) => {
+            const rect = el.getBoundingClientRect();
+            const x = e.clientX - rect.left - rect.width / 2;
+            const y = e.clientY - rect.top - rect.height / 2;
+            
+            const distance = Math.sqrt(x * x + y * y);
+            const maxDistance = Math.max(rect.width, rect.height);
+            
+            if (distance < maxDistance) {
+                const strength = (maxDistance - distance) / maxDistance;
+                const moveX = x * strength * 0.3;
+                const moveY = y * strength * 0.3;
+                
+                el.style.transform = `translate(${moveX}px, ${moveY}px) scale(1.05)`;
+            }
+        });
+        
+        el.addEventListener('mouseleave', () => {
+            el.style.transform = 'translate(0, 0) scale(1)';
+        });
+    });
+}
+
+// Setup parallax effects
+function setupParallaxEffects() {
+    window.addEventListener('scroll', () => {
+        const scrolled = window.pageYOffset;
+        const parallaxElements = document.querySelectorAll('.parallax-bg');
+        
+        parallaxElements.forEach(el => {
+            const speed = el.dataset.speed || 0.5;
+            el.style.transform = `translateY(${scrolled * speed}px)`;
+        });
+    });
+}
+
+// Setup sophisticated interactions
+function setupSophisticatedInteractions() {
+    // Enhanced form focus effects
+    const formInputs = document.querySelectorAll('input, textarea, select');
+    formInputs.forEach(input => {
+        input.addEventListener('focus', function() {
+            this.parentElement.classList.add('input-focused');
+            
+            // Add ripple effect
+            const ripple = document.createElement('div');
+            ripple.className = 'input-ripple';
+            this.parentElement.appendChild(ripple);
+            
+            setTimeout(() => ripple.remove(), 600);
+        });
+        
+        input.addEventListener('blur', function() {
+            this.parentElement.classList.remove('input-focused');
+        });
+    });
+    
+    // Enhanced button click effects
+    const buttons = document.querySelectorAll('button, .btn');
+    buttons.forEach(button => {
+        button.addEventListener('click', function(e) {
+            // Create ripple effect
+            const ripple = document.createElement('span');
+            const rect = this.getBoundingClientRect();
+            const size = Math.max(rect.width, rect.height);
+            const x = e.clientX - rect.left - size / 2;
+            const y = e.clientY - rect.top - size / 2;
+            
+            ripple.style.cssText = `
+                position: absolute;
+                border-radius: 50%;
+                background: rgba(255, 255, 255, 0.3);
+                width: ${size}px;
+                height: ${size}px;
+                left: ${x}px;
+                top: ${y}px;
+                animation: ripple 0.6s ease-out;
+                pointer-events: none;
+            `;
+            
+            this.style.position = 'relative';
+            this.style.overflow = 'hidden';
+            this.appendChild(ripple);
+            
+            setTimeout(() => ripple.remove(), 600);
+        });
+    });
+    
+    // Add ripple animation styles
+    const rippleStyle = document.createElement('style');
+    rippleStyle.textContent = `
+        @keyframes ripple {
+            0% {
+                transform: scale(0);
+                opacity: 1;
+            }
+            100% {
+                transform: scale(4);
+                opacity: 0;
+            }
+        }
+        
+        .input-focused {
+            transform: translateY(-2px);
+        }
+        
+        .input-ripple {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(90deg, transparent, rgba(212, 175, 55, 0.1), transparent);
+            animation: inputRipple 0.6s ease;
+        }
+        
+        @keyframes inputRipple {
+            0% {
+                transform: translateX(-100%);
+            }
+            100% {
+                transform: translateX(100%);
+            }
+        }
+    `;
+    document.head.appendChild(rippleStyle);
 }

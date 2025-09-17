@@ -144,10 +144,43 @@ const usersDB = new JSONDatabase('users.json');
 const transfersDB = new JSONDatabase('transfers.json');
 const reportsDB = new JSONDatabase('reports.json');
 
+// Helper functions for backward compatibility
+async function readData(type) {
+    switch (type) {
+        case 'users':
+            return await usersDB.read();
+        case 'devices':
+            return await devicesDB.read();
+        case 'transfers':
+            return await transfersDB.read();
+        case 'reports':
+            return await reportsDB.read();
+        default:
+            throw new Error(`Unknown data type: ${type}`);
+    }
+}
+
+async function writeData(type, data) {
+    switch (type) {
+        case 'users':
+            return await usersDB.write(data);
+        case 'devices':
+            return await devicesDB.write(data);
+        case 'transfers':
+            return await transfersDB.write(data);
+        case 'reports':
+            return await reportsDB.write(data);
+        default:
+            throw new Error(`Unknown data type: ${type}`);
+    }
+}
+
 module.exports = {
     JSONDatabase,
     devicesDB,
     usersDB,
     transfersDB,
-    reportsDB
+    reportsDB,
+    readData,
+    writeData
 };

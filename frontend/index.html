@@ -63,43 +63,56 @@
 
     <!-- Hero Section -->
     <section id="home" class="hero">
+        <div class="hero-background">
+            <div class="hero-particles"></div>
+            <div class="hero-grid"></div>
+        </div>
         <div class="container">
             <div class="hero-content">
-                <div class="hero-badge">
+                <div class="hero-badge animate-fade-in">
                     <i class="fas fa-shield-alt"></i>
-                    TRUSTED BY THOUSANDS
+                    <span class="badge-text">TRUSTED BY THOUSANDS</span>
+                    <div class="badge-glow"></div>
                 </div>
-                <h1 class="hero-title">
-                    <i class="fas fa-shield-alt"></i>
-                    PROTECT YOUR GADGETS
+                <h1 class="hero-title animate-slide-up">
+                    <span class="title-primary">
+                        <i class="fas fa-shield-alt"></i>
+                        PROTECT YOUR
+                    </span>
+                    <span class="title-accent">GADGETS</span>
+                    <div class="title-underline"></div>
                 </h1>
-                <p class="hero-subtitle">
-                    The Ultimate Security Platform for Device Registration, Theft Prevention & Recovery
+                <p class="hero-subtitle animate-slide-up-delay">
+                    The Ultimate <span class="text-highlight">AI-Powered</span> Security Platform for Device Registration, Theft Prevention & Recovery
                 </p>
-                <div class="hero-features">
+                <div class="hero-features animate-fade-in-delay">
                     <div class="feature-item">
-                        <i class="fas fa-check"></i>
-                        Instant Registration
+                        <div class="feature-icon">
+                            <i class="fas fa-bolt"></i>
+                        </div>
+                        <span>Instant Registration</span>
                     </div>
                     <div class="feature-item">
-                        <i class="fas fa-check"></i>
-                        Real-time Tracking
+                        <div class="feature-icon">
+                            <i class="fas fa-satellite-dish"></i>
+                        </div>
+                        <span>Real-time Tracking</span>
                     </div>
                     <div class="feature-item">
-                        <i class="fas fa-check"></i>
-                        AI-Powered Recovery
+                        <div class="feature-icon">
+                            <i class="fas fa-brain"></i>
+                        </div>
+                        <span>AI-Powered Recovery</span>
                     </div>
                 </div>
-                <div class="hero-buttons">
-                    <a href="#dashboard" class="cta-button primary pulse-animation" onclick="redirectToDashboard('register')">
+                <div class="hero-buttons animate-slide-up-delay-2">
+                    <a href="#dashboard" class="btn btn-primary btn-lg glow-effect hover-lift" onclick="redirectToDashboard('register')">
                         <i class="fas fa-plus-circle"></i>
-                        Register Device Now
-                        <span class="button-tooltip">Start protecting your device in 30 seconds</span>
+                        <span>Register Device Now</span>
                     </a>
-                    <a href="#dashboard" class="cta-button secondary" onclick="redirectToDashboard('search')">
+                    <a href="#dashboard" class="btn btn-secondary btn-lg hover-lift" onclick="redirectToDashboard('search')">
                         <i class="fas fa-search"></i>
-                        Check Device Status
-                        <span class="button-tooltip">Search our database instantly</span>
+                        <span>Check Device Status</span>
                     </a>
                 </div>
                 <div class="hero-stats">
@@ -157,8 +170,8 @@
                 <h2 class="section-title">POWERFUL SECURITY FEATURES</h2>
                 <p class="section-subtitle">Everything you need to protect and recover your valuable devices</p>
             </div>
-            <div class="actions-grid">
-                <div class="action-card" data-action="register">
+            <div class="actions-grid stagger-animation">
+                <div class="action-card card hover-lift" data-action="register">
                     <div class="action-icon">
                         <i class="fas fa-shield-alt"></i>
                     </div>
@@ -168,13 +181,13 @@
                         <span class="feature-tag">✓ Instant Protection</span>
                         <span class="feature-tag">✓ Cloud Backup</span>
                     </div>
-                    <button class="action-button" onclick="redirectToDashboard('register')">
+                    <button class="btn btn-primary hover-lift shimmer-effect" onclick="redirectToDashboard('register')">
                         <i class="fas fa-arrow-right"></i>
                         Start Registration
                     </button>
                 </div>
                 
-                <div class="action-card" data-action="search">
+                <div class="action-card card hover-lift" data-action="search">
                     <div class="action-icon">
                         <i class="fas fa-search"></i>
                     </div>
@@ -184,13 +197,13 @@
                         <span class="feature-tag">✓ Instant Results</span>
                         <span class="feature-tag">✓ Global Database</span>
                     </div>
-                    <button class="action-button" onclick="redirectToDashboard('search')">
+                    <button class="btn btn-primary hover-lift shimmer-effect" onclick="redirectToDashboard('search')">
                         <i class="fas fa-arrow-right"></i>
                         Search Now
                     </button>
                 </div>
                 
-                <div class="action-card" data-action="report">
+                <div class="action-card card hover-lift" data-action="report">
                     <div class="action-icon">
                         <i class="fas fa-exclamation-triangle"></i>
                     </div>
@@ -200,13 +213,13 @@
                         <span class="feature-tag">✓ Instant Alert</span>
                         <span class="feature-tag">✓ Recovery Network</span>
                     </div>
-                    <button class="action-button" onclick="redirectToDashboard('reports')">
+                    <button class="btn btn-primary hover-lift shimmer-effect" onclick="redirectToDashboard('reports')">
                         <i class="fas fa-arrow-right"></i>
                         Report Device
                     </button>
                 </div>
                 
-                <div class="action-card" data-action="chatbot">
+                <div class="action-card card hover-lift" data-action="chatbot">
                     <div class="action-icon">
                         <i class="fas fa-robot"></i>
                     </div>
@@ -216,13 +229,13 @@
                         <span class="feature-tag">✓ 24/7 Support</span>
                         <span class="feature-tag">✓ Smart Assistance</span>
                     </div>
-                    <button class="action-button" onclick="toggleChatbot()">
+                    <button class="btn btn-primary hover-lift shimmer-effect" onclick="toggleChatbot()">
                         <i class="fas fa-arrow-right"></i>
                         Ask Assistant
                     </button>
                 </div>
                 
-                <div class="action-card" data-action="transfer">
+                <div class="action-card card hover-lift" data-action="transfer">
                     <div class="action-icon">
                         <i class="fas fa-exchange-alt"></i>
                     </div>
@@ -232,7 +245,7 @@
                         <span class="feature-tag">✓ Secure Process</span>
                         <span class="feature-tag">✓ Legal Protection</span>
                     </div>
-                    <button class="action-button" onclick="redirectToDashboard('transfers')">
+                    <button class="btn btn-primary hover-lift shimmer-effect" onclick="redirectToDashboard('transfers')">
                         <i class="fas fa-arrow-right"></i>
                         Start Transfer
                     </button>
@@ -1475,5 +1488,11 @@
 
     <!-- Success/Error Toast Messages -->
     <div id="toast-container" class="toast-container"></div>
+    
+    <!-- Main JavaScript -->
+    <script src="js/main.js"></script>
+    
+    <!-- Integration Test Script (Development Only) -->
+    <script src="../integration-test.js"></script>
 </body>
 </html>

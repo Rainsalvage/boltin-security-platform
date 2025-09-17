@@ -1,0 +1,7 @@
+version: 2
+build:
+  commands:
+    - npm install
+    - npm run build 2>/dev/null || echo "No build script found"
+run:
+  command: npm start

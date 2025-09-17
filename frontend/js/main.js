@@ -3,6 +3,7 @@
 // Global variables
 let registeredDevices = 0;
 let recoveredDevices = 0;
+let currentTransferStep = 1;
 
 // DOM Content Loaded
 document.addEventListener('DOMContentLoaded', function() {
@@ -912,6 +913,22 @@ async function submitTransfer() {
 // Add message to chat
 function addChatMessage(message, sender) {
     const chatMessages = document.getElementById('chat-messages');
+    const messageDiv = document.createElement('div');
+    messageDiv.className = `chat-message ${sender}-message`;
+    
+    if (sender === 'bot') {
+        // For bot messages, preserve formatting and add icon
+        messageDiv.innerHTML = `
+            <i class="fas fa-robot"></i>
+            <div class="message-content">${message}</div>
+        `;
+    } else {
+        messageDiv.textContent = message;
+    }
+    
+    chatMessages.appendChild(messageDiv);
+    chatMessages.scrollTop = chatMessages.scrollHeight;
+}
     const messageDiv = document.createElement('div');
     messageDiv.className = `chat-message ${sender}-message`;
     

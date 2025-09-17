@@ -106,6 +106,7 @@ app.use('/api/search', require('./routes/search'));
 app.use('/api/transfer', require('./routes/transfer'));
 app.use('/api/reports', require('./routes/reports'));
 app.use('/api/upload', require('./routes/upload'));
+app.use('/api/chatbot', require('./routes/chatbot'));
 
 // Serve the main HTML file for the root route
 app.get('/', (req, res) => {

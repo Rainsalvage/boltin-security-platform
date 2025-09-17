@@ -27,7 +27,9 @@ app.use(helmet({
 
 // CORS configuration
 app.use(cors({
-    origin: process.env.CORS_ORIGIN || 'http://localhost:3000',
+    origin: process.env.NODE_ENV === 'production' 
+        ? ['https://boltin-security-platform.vercel.app', 'https://boltin-security-platform.railway.app', 'https://boltin-security-platform.onrender.com']
+        : ['http://localhost:3000', 'http://127.0.0.1:3000'],
     credentials: true,
     methods: ['GET', 'POST', 'PUT', 'DELETE'],
     allowedHeaders: ['Content-Type', 'Authorization']

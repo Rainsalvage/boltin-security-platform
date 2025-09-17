@@ -3,288 +3,398 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Rainyport University - Shaping Tomorrow's Leaders</title>
-    <link rel="stylesheet" href="styles.css">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <title>BOLTIN - Ultimate Gadget Security & Protection</title>
+    <link rel="stylesheet" href="frontend/css/styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <script defer src="frontend/js/main.js"></script>
 </head>
 <body>
-    <!-- Header / Navigation -->
-    <header class="header">
-        <nav class="navbar">
+    <!-- Navigation -->
+    <header class="navbar">
+        <div class="container">
             <div class="nav-container">
-                <div class="nav-logo">
-                    <img src="https://via.placeholder.com/60x60/1e3a8a/ffffff?text=RU" alt="Rainyport University Logo">
-                    <span class="logo-text">Rainyport University</span>
+                <div class="logo">
+                    <i class="fas fa-shield-alt"></i>
+                    BOLTIN
                 </div>
-                <ul class="nav-menu">
-                    <li class="nav-item"><a href="#home" class="nav-link">Home</a></li>
-                    <li class="nav-item"><a href="#about" class="nav-link">About Us</a></li>
-                    <li class="nav-item"><a href="#academics" class="nav-link">Academics</a></li>
-                    <li class="nav-item"><a href="#admissions" class="nav-link">Admissions</a></li>
-                    <li class="nav-item"><a href="#research" class="nav-link">Research</a></li>
-                    <li class="nav-item"><a href="#contact" class="nav-link">Contact</a></li>
-                </ul>
                 <div class="hamburger">
                     <span class="bar"></span>
                     <span class="bar"></span>
                     <span class="bar"></span>
                 </div>
+                <ul class="nav-menu">
+                    <li class="nav-item"><a href="#home" class="nav-link">Home</a></li>
+                    <li class="nav-item"><a href="#features" class="nav-link">Features</a></li>
+                    <li class="nav-item"><a href="#register" class="nav-link">Register Gadget</a></li>
+                    <li class="nav-item"><a href="#search" class="nav-link">Search Device</a></li>
+                    <li class="nav-item"><a href="#transfer" class="nav-link">Transfer Ownership</a></li>
+                    <li class="nav-item"><a href="#dashboard" class="nav-link">Dashboard</a></li>
+                </ul>
             </div>
-        </nav>
+        </div>
     </header>
 
     <!-- Hero Section -->
     <section id="home" class="hero">
-        <div class="hero-content">
-            <h1 class="hero-title">Welcome to Rainyport University</h1>
-            <p class="hero-subtitle">Shaping leaders, driving innovation, inspiring excellence.</p>
-            <a href="#admissions" class="cta-button">Apply Now</a>
-        </div>
-    </section>
-
-    <!-- About Section -->
-    <section id="about" class="about">
         <div class="container">
-            <div class="section-header">
-                <h2 class="section-title">About Rainyport University</h2>
-                <p class="section-description">
-                    For over a century, Rainyport University has been at the forefront of education, 
-                    research, and innovation. We are committed to developing the next generation of leaders 
-                    who will shape our world through knowledge, creativity, and ethical leadership.
+            <div class="hero-content">
+                <div class="hero-badge">
+                    <i class="fas fa-shield-alt"></i>
+                    TRUSTED BY THOUSANDS
+                </div>
+                <h1 class="hero-title">
+                    <i class="fas fa-shield-alt"></i>
+                    PROTECT YOUR GADGETS
+                </h1>
+                <p class="hero-subtitle">
+                    The Ultimate Security Platform for Device Registration, Theft Prevention & Recovery
                 </p>
-            </div>
-            <div class="about-features">
-                <div class="feature">
-                    <div class="feature-icon">
-                        <i class="fas fa-graduation-cap"></i>
+                <div class="hero-features">
+                    <div class="feature-item">
+                        <i class="fas fa-check"></i>
+                        Instant Registration
                     </div>
-                    <h3 class="feature-title">Excellence in Teaching</h3>
-                    <p class="feature-description">
-                        World-class faculty delivering innovative education with personalized attention 
-                        and cutting-edge methodologies.
-                    </p>
+                    <div class="feature-item">
+                        <i class="fas fa-check"></i>
+                        Real-time Tracking
+                    </div>
+                    <div class="feature-item">
+                        <i class="fas fa-check"></i>
+                        AI-Powered Recovery
+                    </div>
                 </div>
-                <div class="feature">
-                    <div class="feature-icon">
-                        <i class="fas fa-globe"></i>
-                    </div>
-                    <h3 class="feature-title">Global Opportunities</h3>
-                    <p class="feature-description">
-                        International exchange programs, global partnerships, and diverse learning 
-                        experiences across continents.
-                    </p>
+                <div class="hero-buttons">
+                    <a href="#register" class="cta-button primary pulse-animation">
+                        <i class="fas fa-plus-circle"></i>
+                        Register Device Now
+                        <span class="button-tooltip">Start protecting your device in 30 seconds</span>
+                    </a>
+                    <a href="#search" class="cta-button secondary">
+                        <i class="fas fa-search"></i>
+                        Check Device Status
+                        <span class="button-tooltip">Search our database instantly</span>
+                    </a>
                 </div>
-                <div class="feature">
-                    <div class="feature-icon">
-                        <i class="fas fa-lightbulb"></i>
+                <div class="hero-stats">
+                    <div class="stat">
+                        <span class="stat-number" id="registered-count">0</span>
+                        <span class="stat-label">Devices Protected</span>
+                        <div class="stat-trend">
+                            <i class="fas fa-arrow-up"></i>
+                            +15% this month
+                        </div>
                     </div>
-                    <h3 class="feature-title">Research & Innovation</h3>
-                    <p class="feature-description">
-                        Groundbreaking research facilities and innovation labs driving discoveries 
-                        that impact society.
-                    </p>
+                    <div class="stat">
+                        <span class="stat-number" id="recovered-count">0</span>
+                        <span class="stat-label">Devices Recovered</span>
+                        <div class="stat-trend">
+                            <i class="fas fa-arrow-up"></i>
+                            98.5% success rate
+                        </div>
+                    </div>
+                    <div class="stat">
+                        <span class="stat-number">24/7</span>
+                        <span class="stat-label">Security Monitoring</span>
+                        <div class="stat-trend">
+                            <i class="fas fa-shield-alt"></i>
+                            Always active
+                        </div>
+                    </div>
+                </div>
+                <div class="trust-indicators">
+                    <div class="trust-item">
+                        <i class="fas fa-lock"></i>
+                        <span>Bank-level Security</span>
+                    </div>
+                    <div class="trust-item">
+                        <i class="fas fa-users"></i>
+                        <span>Trusted by 50,000+ Users</span>
+                    </div>
+                    <div class="trust-item">
+                        <i class="fas fa-award"></i>
+                        <span>Industry Leading Platform</span>
+                    </div>
                 </div>
             </div>
         </div>
+        <div class="hero-scroll-indicator">
+            <i class="fas fa-chevron-down"></i>
+            <span>Discover Features</span>
+        </div>
     </section>
 
-    <!-- Programs / Academics Section -->
-    <section id="academics" class="academics">
+    <!-- Quick Actions Section -->
+    <section id="features" class="quick-actions">
         <div class="container">
             <div class="section-header">
-                <h2 class="section-title">Our Academic Programs</h2>
-                <p class="section-description">
-                    Discover world-class education across diverse fields of study
-                </p>
+                <h2 class="section-title">POWERFUL SECURITY FEATURES</h2>
+                <p class="section-subtitle">Everything you need to protect and recover your valuable devices</p>
             </div>
-            <div class="programs-grid">
-                <div class="program-card">
-                    <img src="https://via.placeholder.com/400x250/1e3a8a/ffffff?text=Engineering" alt="Engineering">
-                    <div class="program-content">
-                        <h3 class="program-title">School of Engineering</h3>
-                        <p class="program-description">
-                            Cutting-edge engineering programs preparing students for tomorrow's 
-                            technological challenges with hands-on experience and industry partnerships.
-                        </p>
+            <div class="actions-grid">
+                <div class="action-card" data-action="register">
+                    <div class="action-icon">
+                        <i class="fas fa-shield-alt"></i>
                     </div>
+                    <h3 class="action-title">Register Gadget</h3>
+                    <p class="action-description">Secure your device with our advanced registration system in under 30 seconds</p>
+                    <div class="action-features">
+                        <span class="feature-tag">✓ Instant Protection</span>
+                        <span class="feature-tag">✓ Cloud Backup</span>
+                    </div>
+                    <button class="action-button" onclick="showRegistration()">
+                        <i class="fas fa-arrow-right"></i>
+                        Start Registration
+                    </button>
                 </div>
-                <div class="program-card">
-                    <img src="https://via.placeholder.com/400x250/dc2626/ffffff?text=Medicine" alt="Medicine">
-                    <div class="program-content">
-                        <h3 class="program-title">School of Medicine</h3>
-                        <p class="program-description">
-                            Comprehensive medical education with state-of-the-art facilities, 
-                            clinical training, and research opportunities in healthcare innovation.
-                        </p>
+                
+                <div class="action-card" data-action="search">
+                    <div class="action-icon">
+                        <i class="fas fa-search"></i>
                     </div>
+                    <h3 class="action-title">Device Lookup</h3>
+                    <p class="action-description">Check if a device is registered or reported stolen with our global database</p>
+                    <div class="action-features">
+                        <span class="feature-tag">✓ Instant Results</span>
+                        <span class="feature-tag">✓ Global Database</span>
+                    </div>
+                    <button class="action-button" onclick="showSearch()">
+                        <i class="fas fa-arrow-right"></i>
+                        Search Now
+                    </button>
                 </div>
-                <div class="program-card">
-                    <img src="https://via.placeholder.com/400x250/059669/ffffff?text=Business" alt="Business">
-                    <div class="program-content">
-                        <h3 class="program-title">School of Business</h3>
-                        <p class="program-description">
-                            Dynamic business programs fostering entrepreneurial thinking, 
-                            leadership skills, and global business acumen for future leaders.
-                        </p>
+                
+                <div class="action-card" data-action="report">
+                    <div class="action-icon">
+                        <i class="fas fa-exclamation-triangle"></i>
                     </div>
+                    <h3 class="action-title">Report Lost/Stolen</h3>
+                    <p class="action-description">Immediately flag your device and activate our recovery network</p>
+                    <div class="action-features">
+                        <span class="feature-tag">✓ Instant Alert</span>
+                        <span class="feature-tag">✓ Recovery Network</span>
+                    </div>
+                    <button class="action-button" onclick="showLostReport()">
+                        <i class="fas fa-arrow-right"></i>
+                        Report Device
+                    </button>
                 </div>
-                <div class="program-card">
-                    <img src="https://via.placeholder.com/400x250/7c3aed/ffffff?text=Arts" alt="Arts">
-                    <div class="program-content">
-                        <h3 class="program-title">School of Arts & Humanities</h3>
-                        <p class="program-description">
-                            Creative and critical thinking programs exploring human culture, 
-                            expression, and society through literature, arts, and philosophy.
-                        </p>
+                
+                <div class="action-card" data-action="chatbot">
+                    <div class="action-icon">
+                        <i class="fas fa-robot"></i>
                     </div>
+                    <h3 class="action-title">AI Assistant</h3>
+                    <p class="action-description">Get instant help with our intelligent chatbot available 24/7</p>
+                    <div class="action-features">
+                        <span class="feature-tag">✓ 24/7 Support</span>
+                        <span class="feature-tag">✓ Smart Assistance</span>
+                    </div>
+                    <button class="action-button" onclick="toggleChatbot()">
+                        <i class="fas fa-arrow-right"></i>
+                        Ask Assistant
+                    </button>
+                </div>
+                
+                <div class="action-card" data-action="transfer">
+                    <div class="action-icon">
+                        <i class="fas fa-exchange-alt"></i>
+                    </div>
+                    <h3 class="action-title">Transfer Ownership</h3>
+                    <p class="action-description">Securely transfer device ownership to a new owner with full verification</p>
+                    <div class="action-features">
+                        <span class="feature-tag">✓ Secure Process</span>
+                        <span class="feature-tag">✓ Legal Protection</span>
+                    </div>
+                    <button class="action-button" onclick="showTransfer()">
+                        <i class="fas fa-arrow-right"></i>
+                        Start Transfer
+                    </button>
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- News & Events Section -->
-    <section class="news-events">
+    <!-- Live Activity Feed -->
+    <section class="activity-feed">
         <div class="container">
-            <div class="section-header">
-                <h2 class="section-title">News & Events</h2>
-                <p class="section-description">Stay updated with the latest happenings at our university</p>
+            <h2 class="section-title">LIVE SECURITY ACTIVITY</h2>
+            <div class="activity-container">
+                <div class="activity-item" id="activity-1">
+                    <div class="activity-icon success">
+                        <i class="fas fa-shield-alt"></i>
+                    </div>
+                    <div class="activity-content">
+                        <p><strong>iPhone 13</strong> registered successfully</p>
+                        <span class="activity-time">2 minutes ago</span>
+                    </div>
+                    <div class="activity-location">Lagos, Nigeria</div>
+                </div>
+                <div class="activity-item" id="activity-2">
+                    <div class="activity-icon recovered">
+                        <i class="fas fa-check-circle"></i>
+                    </div>
+                    <div class="activity-content">
+                        <p><strong>MacBook Pro</strong> recovered and returned to owner</p>
+                        <span class="activity-time">5 minutes ago</span>
+                    </div>
+                    <div class="activity-location">Abuja, Nigeria</div>
+                </div>
+                <div class="activity-item" id="activity-3">
+                    <div class="activity-icon warning">
+                        <i class="fas fa-exclamation-triangle"></i>
+                    </div>
+                    <div class="activity-content">
+                        <p><strong>Samsung Galaxy</strong> reported as stolen</p>
+                        <span class="activity-time">8 minutes ago</span>
+                    </div>
+                    <div class="activity-location">Port Harcourt, Nigeria</div>
+                </div>
+                <div class="activity-item" id="activity-4">
+                    <div class="activity-icon success">
+                        <i class="fas fa-shield-alt"></i>
+                    </div>
+                    <div class="activity-content">
+                        <p><strong>iPad Air</strong> registered successfully</p>
+                        <span class="activity-time">12 minutes ago</span>
+                    </div>
+                    <div class="activity-location">Kano, Nigeria</div>
+                </div>
             </div>
-            <div class="news-grid">
-                <div class="news-card">
-                    <img src="https://via.placeholder.com/350x200/1e3a8a/ffffff?text=Research" alt="Research Breakthrough">
-                    <div class="news-content">
-                        <div class="news-date">December 8, 2024</div>
-                        <h3 class="news-title">Breakthrough in Renewable Energy Research</h3>
-                        <p class="news-description">
-                            Our engineering team achieves major milestone in solar panel efficiency, 
-                            promising cleaner energy solutions.
-                        </p>
+        </div>
+    </section>
+
+    <!-- Testimonials Section -->
+    <section class="testimonials">
+        <div class="container">
+            <h2 class="section-title">TRUSTED BY THOUSANDS</h2>
+            <div class="testimonials-grid">
+                <div class="testimonial-card">
+                    <div class="testimonial-content">
+                        <p>"Boltin helped me recover my stolen iPhone within 48 hours. The platform is incredibly efficient!"</p>
+                    </div>
+                    <div class="testimonial-author">
+                        <div class="author-avatar">
+                            <i class="fas fa-user"></i>
+                        </div>
+                        <div class="author-info">
+                            <span class="author-name">Adebayo Johnson</span>
+                            <span class="author-title">Lagos Business Owner</span>
+                        </div>
+                    </div>
+                    <div class="testimonial-rating">
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
                     </div>
                 </div>
-                <div class="news-card">
-                    <img src="https://via.placeholder.com/350x200/059669/ffffff?text=Graduation" alt="Graduation Ceremony">
-                    <div class="news-content">
-                        <div class="news-date">December 15, 2024</div>
-                        <h3 class="news-title">Fall 2024 Graduation Ceremony</h3>
-                        <p class="news-description">
-                            Join us in celebrating the achievements of our graduating class with 
-                            keynote speaker Dr. Sarah Johnson.
-                        </p>
+                
+                <div class="testimonial-card">
+                    <div class="testimonial-content">
+                        <p>"The registration process is so simple, and knowing my devices are protected gives me peace of mind."</p>
+                    </div>
+                    <div class="testimonial-author">
+                        <div class="author-avatar">
+                            <i class="fas fa-user"></i>
+                        </div>
+                        <div class="author-info">
+                            <span class="author-name">Fatima Ibrahim</span>
+                            <span class="author-title">University Student</span>
+                        </div>
+                    </div>
+                    <div class="testimonial-rating">
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
                     </div>
                 </div>
-                <div class="news-card">
-                    <img src="https://via.placeholder.com/350x200/dc2626/ffffff?text=Partnership" alt="Global Partnership">
-                    <div class="news-content">
-                        <div class="news-date">December 20, 2024</div>
-                        <h3 class="news-title">New Global Partnership Announced</h3>
-                        <p class="news-description">
-                            Strategic partnership with leading European universities opens new 
-                            exchange opportunities for students.
-                        </p>
+                
+                <div class="testimonial-card">
+                    <div class="testimonial-content">
+                        <p>"As a tech professional, I appreciate the security features and AI-powered assistance. Highly recommended!"</p>
                     </div>
-                </div>
-                <div class="news-card">
-                    <img src="https://via.placeholder.com/350x200/7c3aed/ffffff?text=Innovation" alt="Innovation Hub">
-                    <div class="news-content">
-                        <div class="news-date">January 5, 2025</div>
-                        <h3 class="news-title">Innovation Hub Grand Opening</h3>
-                        <p class="news-description">
-                            State-of-the-art innovation center opens to foster entrepreneurship 
-                            and startup development among students.
-                        </p>
+                    <div class="testimonial-author">
+                        <div class="author-avatar">
+                            <i class="fas fa-user"></i>
+                        </div>
+                        <div class="author-info">
+                            <span class="author-name">Chinedu Okafor</span>
+                            <span class="author-title">Software Engineer</span>
+                        </div>
+                    </div>
+                    <div class="testimonial-rating">
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
                     </div>
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- Contact Section / Footer -->
-    <footer id="contact" class="footer">
+    <!-- Footer -->
+    <footer class="footer">
         <div class="container">
             <div class="footer-content">
                 <div class="footer-section">
-                    <h3 class="footer-title">Contact Information</h3>
-                    <div class="contact-info">
-                        <div class="contact-item">
-                            <i class="fas fa-map-marker-alt"></i>
-                            <span>123 University Avenue, Academic City, AC 12345</span>
-                        </div>
-                        <div class="contact-item">
-                            <i class="fas fa-phone"></i>
-                            <span>+1 (555) 123-4567</span>
-                        </div>
-                        <div class="contact-item">
-                            <i class="fas fa-envelope"></i>
-                            <span>info@rainyportuniversity.edu</span>
-                        </div>
+                    <div class="footer-logo">
+                        <i class="fas fa-shield-alt"></i>
+                        BOLTIN
                     </div>
+                    <p>Protecting your digital life, one device at a time.</p>
                 </div>
                 <div class="footer-section">
-                    <h3 class="footer-title">Quick Links</h3>
-                    <ul class="footer-links">
-                        <li><a href="#admissions">Admissions</a></li>
-                        <li><a href="#academics">Academic Programs</a></li>
-                        <li><a href="#research">Research</a></li>
-                        <li><a href="#library">Library</a></li>
-                        <li><a href="#campus-life">Campus Life</a></li>
-                        <li><a href="#alumni">Alumni</a></li>
+                    <h3>Quick Links</h3>
+                    <ul>
+                        <li><a href="#register">Register Device</a></li>
+                        <li><a href="#search">Search Device</a></li>
+                        <li><a href="#dashboard">Dashboard</a></li>
+                        <li><a href="#support">Support</a></li>
                     </ul>
                 </div>
                 <div class="footer-section">
-                    <h3 class="footer-title">Follow Us</h3>
-                    <div class="social-links">
-                        <a href="#" class="social-link"><i class="fab fa-facebook-f"></i></a>
-                        <a href="#" class="social-link"><i class="fab fa-twitter"></i></a>
-                        <a href="#" class="social-link"><i class="fab fa-linkedin-in"></i></a>
-                        <a href="#" class="social-link"><i class="fab fa-instagram"></i></a>
-                    </div>
+                    <h3>Emergency</h3>
+                    <p>Report stolen device: <strong>24/7 Hotline</strong></p>
+                    <p>Email: <strong>security@boltin.com</strong></p>
                 </div>
             </div>
             <div class="footer-bottom">
-                <p>&copy; 2024 Rainyport University. All rights reserved. | Privacy Policy | Terms of Service</p>
+                <p>&copy; 2025 BOLTIN Security Platform. All rights reserved.</p>
             </div>
         </div>
     </footer>
 
+    <!-- Success/Error Toast Messages -->
+    <div id="toast-container" class="toast-container"></div>
+
+    <!-- Load frontend components dynamically -->
     <script>
-        // Mobile menu toggle
-        const hamburger = document.querySelector('.hamburger');
-        const navMenu = document.querySelector('.nav-menu');
-
-        hamburger.addEventListener('click', () => {
-            hamburger.classList.toggle('active');
-            navMenu.classList.toggle('active');
-        });
-
-        // Close mobile menu when clicking on a link
-        document.querySelectorAll('.nav-link').forEach(n => n.addEventListener('click', () => {
-            hamburger.classList.remove('active');
-            navMenu.classList.remove('active');
-        }));
-
-        // Smooth scrolling for navigation links
-        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-            anchor.addEventListener('click', function (e) {
-                e.preventDefault();
-                const target = document.querySelector(this.getAttribute('href'));
-                if (target) {
-                    target.scrollIntoView({
-                        behavior: 'smooth',
-                        block: 'start'
-                    });
+        // Load components when needed
+        async function loadComponent(componentName) {
+            try {
+                const response = await fetch(`frontend/components/${componentName}.js`);
+                if (response.ok) {
+                    const script = document.createElement('script');
+                    script.src = `frontend/components/${componentName}.js`;
+                    document.head.appendChild(script);
                 }
-            });
-        });
-
-        // Header background on scroll
-        window.addEventListener('scroll', () => {
-            const header = document.querySelector('.header');
-            if (window.scrollY > 100) {
-                header.classList.add('scrolled');
-            } else {
-                header.classList.remove('scrolled');
+            } catch (error) {
+                console.log('Component loading:', error);
             }
+        }
+
+        // Initialize components
+        document.addEventListener('DOMContentLoaded', function() {
+            loadComponent('auth');
+            loadComponent('search');
+            loadComponent('admin');
+            loadComponent('dashboard');
         });
     </script>
 </body>

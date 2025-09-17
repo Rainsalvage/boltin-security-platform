@@ -13,6 +13,7 @@ document.addEventListener('DOMContentLoaded', function() {
     animateCounters();
     startLiveActivityFeed();
     setupScrollIndicator();
+    setupMobileEnhancements();
 });
 
 // Initialize the application
@@ -62,6 +63,59 @@ function setupEventListeners() {
     setupMobileMenu();
     setupImageUpload();
     setupTransferForm();
+    setupAdditionalButtons();
+}
+
+// Setup additional button functionality
+function setupAdditionalButtons() {
+    // Ensure all action buttons work even without onclick attributes
+    const actionButtons = document.querySelectorAll('.action-button');
+    actionButtons.forEach(button => {
+        // Skip if already has click event
+        if (!button.onclick) {
+            const buttonText = button.textContent.toLowerCase();
+            if (buttonText.includes('register') || buttonText.includes('start registration')) {
+                button.addEventListener('click', showRegistration);
+            } else if (buttonText.includes('search') || buttonText.includes('search now')) {
+                button.addEventListener('click', showSearch);
+            } else if (buttonText.includes('report') || buttonText.includes('report device')) {
+                button.addEventListener('click', showLostReport);
+            } else if (buttonText.includes('transfer') || buttonText.includes('execute transfer')) {
+                button.addEventListener('click', showTransfer);
+            } else if (buttonText.includes('assistant') || buttonText.includes('contact command')) {
+                button.addEventListener('click', toggleChatbot);
+            }
+        }
+    });
+    
+    // Setup close buttons for modals
+    document.addEventListener('click', function(e) {
+        if (e.target.classList.contains('close-modal') || e.target.closest('.close-modal')) {
+            closeReportModal();
+        }
+    });
+    
+    // Setup footer links
+    const footerLinks = document.querySelectorAll('.footer a[href^="#"]');
+    footerLinks.forEach(link => {
+        link.addEventListener('click', function(e) {
+            e.preventDefault();
+            const target = this.getAttribute('href');
+            
+            if (target === '#register') {
+                showRegistration();
+            } else if (target === '#search') {
+                showSearch();
+            } else if (target === '#dashboard') {
+                showTransfer(); // For now, redirect dashboard to transfer
+            } else {
+                const targetElement = document.querySelector(target);
+                if (targetElement) {
+                    targetElement.scrollIntoView({ behavior: 'smooth' });
+                }
+            }
+        });
+    });
 }
 
 // Setup image upload functionality
@@ -533,11 +587,33 @@ function setupNavigation() {
             }
         });
     });
+    
+    // Also setup hero CTA buttons
+    const ctaButtons = document.querySelectorAll('.cta-button');
+    ctaButtons.forEach(button => {
+        button.addEventListener('click', function(e) {
+            e.preventDefault();
+            const target = this.getAttribute('href');
+            
+            if (target === '#register') {
+                showRegistration();
+            } else if (target === '#search') {
+                showSearch();
+            } else if (target === '#transfer') {
+                showTransfer();
+            } else {
+                const targetElement = document.querySelector(target);
+                if (targetElement) {
+                    targetElement.scrollIntoView({ behavior: 'smooth' });
+                }
+            }
+        });
+    });
 }
 
-// Setup smooth scrolling
+// Setup smooth scrolling (exclude navigation links to avoid conflicts)
 function setupSmoothScrolling() {
-    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+    document.querySelectorAll('a[href^="#"]:not(.nav-link):not(.cta-button)').forEach(anchor => {
         anchor.addEventListener('click', function (e) {
             e.preventDefault();
             const target = document.querySelector(this.getAttribute('href'));
@@ -1099,6 +1175,15 @@ function setupScrollIndicator() {
                 featuresSection.scrollIntoView({ behavior: 'smooth' });
             }
         });
+        
+        // Also add touch support for mobile
+        scrollIndicator.addEventListener('touchstart', function(e) {
+            e.preventDefault();
+            const featuresSection = document.getElementById('features');
+            if (featuresSection) {
+                featuresSection.scrollIntoView({ behavior: 'smooth' });
+            }
+        }, { passive: false });
     }
 }
 
@@ -1139,6 +1224,33 @@ function enhanceFormValidation() {
             validateField(this);
         });
     });
+    
+    // Add visual feedback to all buttons
+    const buttons = document.querySelectorAll('button, .button, .cta-button, .action-button');
+    buttons.forEach(button => {
+        button.addEventListener('click', function() {
+            // Add loading state briefly for feedback
+            const originalText = this.innerHTML;
+            const isSubmitButton = this.type === 'submit' || this.classList.contains('submit-button');
+            
+            if (isSubmitButton) {
+                this.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Processing...';
+                this.disabled = true;
+                
+                // Reset after a short delay (form submission will handle longer states)
+                setTimeout(() => {
+                    this.innerHTML = originalText;
+                    this.disabled = false;
+                }, 1000);
+            } else {
+                // Non-submit buttons get quick visual feedback
+                this.style.transform = 'scale(0.95)';
+                setTimeout(() => {
+                    this.style.transform = '';
+                }, 150);
+            }
+        });
+    });
 }
 
 function validateField(field) {
@@ -1175,8 +1287,60 @@ function isValidEmail(email) {
     return emailRegex.test(email);
 }
 
-// Call enhanced validation setup
-document.addEventListener('DOMContentLoaded', enhanceFormValidation);
+// Test all button functionality (for debugging)
+function testAllButtons() {
+    console.log('🔧 Testing all button functionality...');
+    
+    const tests = [
+        { selector: 'button[onclick="showRegistration()"]', name: 'Registration buttons' },
+        { selector: 'button[onclick="showSearch()"]', name: 'Search buttons' },
+        { selector: 'button[onclick="showLostReport()"]', name: 'Report buttons' },
+        { selector: 'button[onclick="showTransfer()"]', name: 'Transfer buttons' },
+        { selector: 'button[onclick="toggleChatbot()"]', name: 'Chatbot buttons' },
+        { selector: 'button[onclick="nextTransferStep()"]', name: 'Next step buttons' },
+        { selector: 'button[onclick="previousTransferStep()"]', name: 'Previous step buttons' },
+        { selector: 'button[onclick="submitTransfer()"]', name: 'Submit transfer buttons' },
+        { selector: '.cta-button[href="#register"]', name: 'Hero registration CTA' },
+        { selector: '.cta-button[href="#search"]', name: 'Hero search CTA' },
+        { selector: '.nav-link[href="#register"]', name: 'Nav registration link' },
+        { selector: '.nav-link[href="#search"]', name: 'Nav search link' },
+        { selector: '.nav-link[href="#transfer"]', name: 'Nav transfer link' },
+        { selector: '#registration-form', name: 'Registration form' },
+        { selector: '#search-form', name: 'Search form' },
+        { selector: '#chat-form', name: 'Chat form' },
+        { selector: '#transfer-form', name: 'Transfer form' }
+    ];
+    
+    tests.forEach(test => {
+        const elements = document.querySelectorAll(test.selector);
+        if (elements.length > 0) {
+            console.log(`✅ ${test.name}: ${elements.length} element(s) found`);
+        } else {
+            console.log(`❌ ${test.name}: No elements found`);
+        }
+    });
+    
+    // Test function availability
+    const functions = [
+        'showRegistration', 'showSearch', 'showLostReport', 'showTransfer', 
+        'toggleChatbot', 'nextTransferStep', 'previousTransferStep', 'submitTransfer',
+        'handleRegistration', 'handleSearch', 'handleChatMessage'
+    ];
+    
+    functions.forEach(funcName => {
+        if (typeof window[funcName] === 'function') {
+            console.log(`✅ Function ${funcName}: Available`);
+        } else {
+            console.log(`❌ Function ${funcName}: Missing`);
+        }
+    });
+    
+    console.log('🔧 Button functionality test complete!');
+}
+
+// Call test function after DOM is loaded (for debugging)
+// Uncomment the line below to run tests
+setTimeout(testAllButtons, 1000);
 
 // Add typing effect for hero subtitle
 function addTypingEffect() {
@@ -1199,3 +1363,131 @@ function addTypingEffect() {
 
 // Start typing effect after a delay
 setTimeout(addTypingEffect, 1000);
+
+// Mobile-specific enhancements
+function setupMobileEnhancements() {
+    // Prevent zoom on form inputs on iOS
+    const viewport = document.querySelector('meta[name="viewport"]');
+    if (viewport) {
+        viewport.content = 'width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no';
+    }
+    
+    // Add touch feedback to all buttons
+    const buttons = document.querySelectorAll('button, .button, .cta-button, .action-button');
+    buttons.forEach(button => {
+        button.addEventListener('touchstart', function() {
+            this.style.opacity = '0.7';
+        }, { passive: true });
+        
+        button.addEventListener('touchend', function() {
+            this.style.opacity = '1';
+        }, { passive: true });
+        
+        // Prevent double-tap zoom on buttons
+        button.addEventListener('touchend', function(e) {
+            e.preventDefault();
+            this.click();
+        });
+    });
+    
+    // Enhanced mobile menu handling
+    const hamburger = document.querySelector('.hamburger');
+    const navMenu = document.querySelector('.nav-menu');
+    
+    if (hamburger && navMenu) {
+        // Add touch support for hamburger menu
+        hamburger.addEventListener('touchstart', function(e) {
+            e.preventDefault();
+            hamburger.classList.toggle('active');
+            navMenu.classList.toggle('active');
+        }, { passive: false });
+        
+        // Close menu when clicking outside
+        document.addEventListener('touchstart', function(e) {
+            if (!navMenu.contains(e.target) && !hamburger.contains(e.target)) {
+                hamburger.classList.remove('active');
+                navMenu.classList.remove('active');
+            }
+        }, { passive: true });
+    }
+    
+    // Enhanced form validation for mobile
+    const inputs = document.querySelectorAll('input, select, textarea');
+    inputs.forEach(input => {
+        // Better mobile focus handling
+        input.addEventListener('focus', function() {
+            this.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        });
+        
+        // Mobile-specific input formatting
+        if (input.type === 'tel' || input.name === 'contact') {
+            input.addEventListener('input', function() {
+                // Auto-format phone numbers
+                let value = this.value.replace(/\D/g, '');
+                if (value.length > 0) {
+                    this.value = value;
+                }
+            });
+        }
+    });
+    
+    // Mobile-optimized image upload
+    const imageUploadArea = document.querySelector('.image-upload-area');
+    if (imageUploadArea) {
+        // Add touch feedback
+        imageUploadArea.addEventListener('touchstart', function() {
+            this.style.transform = 'scale(0.98)';
+        }, { passive: true });
+        
+        imageUploadArea.addEventListener('touchend', function() {
+            this.style.transform = 'scale(1)';
+        }, { passive: true });
+    }
+    
+    // Optimize chatbot for mobile
+    const chatInput = document.getElementById('chat-input');
+    if (chatInput) {
+        chatInput.addEventListener('focus', function() {
+            // Scroll chatbot into view on mobile
+            setTimeout(() => {
+                this.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            }, 300);
+        });
+    }
+    
+    // Add swipe gesture support for mobile
+    let touchStartX = 0;
+    let touchStartY = 0;
+    
+    document.addEventListener('touchstart', function(e) {
+        touchStartX = e.touches[0].clientX;
+        touchStartY = e.touches[0].clientY;
+    }, { passive: true });
+    
+    document.addEventListener('touchend', function(e) {
+        if (!touchStartX || !touchStartY) return;
+        
+        let touchEndX = e.changedTouches[0].clientX;
+        let touchEndY = e.changedTouches[0].clientY;
+        
+        let diffX = touchStartX - touchEndX;
+        let diffY = touchStartY - touchEndY;
+        
+        // Swipe left to open mobile menu
+        if (Math.abs(diffX) > Math.abs(diffY) && Math.abs(diffX) > 50) {
+            if (diffX < 0 && touchStartX < 50) { // Swipe right from left edge
+                const navMenu = document.querySelector('.nav-menu');
+                const hamburger = document.querySelector('.hamburger');
+                if (navMenu && hamburger) {
+                    navMenu.classList.add('active');
+                    hamburger.classList.add('active');
+                }
+            }
+        }
+        
+        touchStartX = 0;
+        touchStartY = 0;
+    }, { passive: true });
+    
+    console.log('📱 Mobile enhancements initialized');
+}

@@ -696,7 +696,7 @@ th {
     letter-spacing: 1px;
 }
 
-/* Responsive */
+/* Enhanced Mobile Responsiveness for Forms and Buttons */
 @media (max-width: 768px) {
     .dashboard-container {
         grid-template-columns: 1fr;
@@ -716,6 +716,7 @@ th {
         text-align: center;
         transition: 0.3s;
         padding: 1rem 0;
+        z-index: 1001;
     }
     
     .nav-menu.active {
@@ -725,8 +726,81 @@ th {
     .nav-link {
         padding: 1rem;
         display: block;
+        font-size: 1.1rem;
+        min-height: 44px; /* Apple's minimum touch target */
     }
-}
+    
+    /* Enhanced mobile form support */
+    .form-container,
+    .search-container {
+        padding: 2rem 1rem;
+        margin: 1rem;
+    }
+    
+    .form-group input,
+    .form-group select,
+    .form-group textarea {
+        padding: 1rem;
+        font-size: 16px; /* Prevents zoom on iOS */
+        min-height: 44px;
+        -webkit-appearance: none;
+        border-radius: var(--border-radius);
+    }
+    
+    /* Mobile-optimized buttons */
+    .button, .cta-button, .submit-button, .action-button {
+        padding: 1rem 2rem;
+        font-size: 1rem;
+        min-height: 44px;
+        width: 100%;
+        margin-bottom: 1rem;
+        touch-action: manipulation;
+        -webkit-tap-highlight-color: transparent;
+    }
+    
+    .action-button {
+        width: auto;
+        min-width: 150px;
+    }
+    
+    /* Mobile chatbot */
+    .chatbot {
+        width: calc(100vw - 2rem);
+        height: 70vh;
+        right: 1rem;
+        bottom: 1rem;
+        left: 1rem;
+    }
+    
+    .chatbot-toggle {
+        width: 50px;
+        height: 50px;
+        right: 1rem;
+        bottom: 1rem;
+        font-size: 1.2rem;
+    }
+    
+    /* Mobile image upload */
+    .image-upload-area {
+        padding: 2rem 1rem;
+        min-height: 120px;
+    }
+    
+    /* Mobile search */
+    .search-input-group {
+        flex-direction: column;
+        gap: 1rem;
+    }
+    
+    .search-input-group input {
+        width: 100%;
+        margin-bottom: 1rem;
+    }
+    
+    .search-button {
+        width: 100%;
+        min-height: 44px;
+    }
 
 /* Modern Chatbot */
 .chatbot {
@@ -848,6 +922,9 @@ th {
         rgba(255, 210, 0, 0.02) 100%);
     pointer-events: none;
 }
+
+.hero::after {
+    content: '';
     position: absolute;
     top: 0;
     left: 0;
@@ -1661,6 +1738,9 @@ th {
     align-items: center;
     gap: 0.5rem;
     white-space: nowrap;
+    min-height: 44px;
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
 }
 
 .search-button:hover {
@@ -2200,32 +2280,125 @@ html {
     transform: translateY(-1px);
 }
 
-/* Mobile Responsiveness for Modal */
+/* Mobile Touch Enhancements */
 @media (max-width: 768px) {
-    .modal-content {
-        width: 95%;
-        margin: 1rem;
+    /* Ensure all interactive elements have proper touch targets */
+    button, .button, .cta-button, .action-button, .submit-button {
+        min-height: 44px;
+        min-width: 44px;
+        touch-action: manipulation;
+        -webkit-tap-highlight-color: transparent;
+        position: relative;
     }
     
-    .modal-header {
-        padding: 1rem;
+    /* Add touch feedback */
+    button:active, .button:active, .cta-button:active, .action-button:active {
+        transform: scale(0.98);
+        opacity: 0.8;
     }
     
-    .modal-header h2 {
-        font-size: 1.25rem;
+    /* Improve form inputs for mobile */
+    input, select, textarea {
+        min-height: 44px;
+        font-size: 16px; /* Prevents zoom on iOS */
+        -webkit-appearance: none;
+        -moz-appearance: none;
+        appearance: none;
     }
     
-    .report-form {
-        padding: 1.5rem;
+    /* Mobile-specific search improvements */
+    .search-input-group input {
+        width: 100%;
+        margin-bottom: 1rem;
     }
     
-    .action-buttons {
+    .search-button {
+        width: 100%;
+        justify-content: center;
+    }
+    
+    /* Registration form mobile optimization */
+    .registration-form .form-row {
         flex-direction: column;
     }
     
-    .register-button,
-    .report-button {
-        width: 100%;
-        justify-content: center;
+    /* Transfer form mobile optimization */
+    .transfer-steps {
+        flex-direction: column;
+        gap: 1rem;
+    }
+    
+    .step {
+        flex-direction: row;
+        align-items: center;
+        gap: 1rem;
+        max-width: none;
+    }
+    
+    /* Mobile chatbot improvements */
+    .chatbot-footer input {
+        font-size: 16px;
+        padding: 1rem;
+    }
+    
+    /* Improve modal for mobile */
+    .modal-content {
+        width: 95%;
+        margin: 1rem;
+        max-height: 85vh;
+    }
+    
+    /* Better mobile menu */
+    .nav-menu {
+        box-shadow: var(--shadow-lg);
+    }
+    
+    .nav-link {
+        border-bottom: 1px solid rgba(255, 210, 0, 0.1);
+    }
+    
+    .nav-link:last-child {
+        border-bottom: none;
+    }
+    
+    /* Prevent text selection on buttons */
+    button, .button, .cta-button, .action-button {
+        -webkit-user-select: none;
+        -moz-user-select: none;
+        -ms-user-select: none;
+        user-select: none;
+    }
+    
+    /* Improve image upload on mobile */
+    .image-upload-area {
+        padding: 2rem 1rem;
+        min-height: 100px;
+    }
+    
+    .image-preview-container {
+        grid-template-columns: repeat(auto-fit, minmax(80px, 1fr));
+    }
+}
+
+/* Very small screens */
+@media (max-width: 375px) {
+    .hero-title {
+        font-size: 1.8rem;
+    }
+    
+    .hero-subtitle {
+        font-size: 1rem;
+    }
+    
+    .form-container,
+    .search-container {
+        padding: 1.5rem 1rem;
+    }
+    
+    .chatbot {
+        width: calc(100vw - 1rem);
+        right: 0.5rem;
+        bottom: 0.5rem;
+        left: 0.5rem;
     }
 }

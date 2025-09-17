@@ -28,7 +28,7 @@ app.use(helmet({
 // CORS configuration
 app.use(cors({
     origin: process.env.NODE_ENV === 'production' 
-        ? true  // Allow all origins in production for Railway
+        ? ['https://boltin-security-platform-production.up.railway.app', 'https://web-production-*-up.railway.app']
         : ['http://localhost:3000', 'http://127.0.0.1:3000'],
     credentials: true,
     methods: ['GET', 'POST', 'PUT', 'DELETE'],

@@ -654,7 +654,6 @@ function removeImage(button) {
 }
 
 // Transfer Workflow Functions
-let currentTransferStep = 1;
 
 function nextTransferStep() {
     if (currentTransferStep < 3) {
@@ -922,18 +921,6 @@ function addChatMessage(message, sender) {
             <i class="fas fa-robot"></i>
             <div class="message-content">${message}</div>
         `;
-    } else {
-        messageDiv.textContent = message;
-    }
-    
-    chatMessages.appendChild(messageDiv);
-    chatMessages.scrollTop = chatMessages.scrollHeight;
-}
-    const messageDiv = document.createElement('div');
-    messageDiv.className = `chat-message ${sender}-message`;
-    
-    if (sender === 'bot') {
-        messageDiv.innerHTML = `<i class="fas fa-robot"></i> ${message}`;
     } else {
         messageDiv.innerHTML = `<i class="fas fa-user"></i> ${message}`;
     }

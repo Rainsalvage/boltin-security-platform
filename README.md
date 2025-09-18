@@ -16,13 +16,16 @@ BOLTIN is an advanced device security platform that provides comprehensive prote
 ### ✨ **Key Features**
 
 - 🔐 **Advanced Authentication System** - Secure login/registration with JWT
+- 🌓 **Dark/Light Theme Toggle** - Professional theme switching with persistence
+- 📱 **Mobile-First Responsive Design** - Fully optimized for all devices
+- 👆 **Enhanced Touch Interactions** - Swipe gestures and touch feedback
 - 📱 **Device Registration** - Comprehensive device protection with multi-image upload
 - 🔍 **Device Search & Verification** - Global device database lookup
 - 🚨 **Theft Reporting** - Lost/stolen device reporting with recovery assistance
 - 🔄 **Ownership Transfer** - Secure 3-step device ownership transfer
 - 🤖 **AI-Powered Chatbot** - 24/7 intelligent customer support
 - 📊 **Security Dashboard** - Complete device management interface
-- 📱 **Mobile Responsive** - Fully optimized for all devices
+- ⌨️ **Full Accessibility** - Keyboard navigation and screen reader support
 
 ---
 

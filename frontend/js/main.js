@@ -1,43 +1,6 @@
 // Boltin App - Main JavaScript Functionality
-// Sophisticated UI v3.0 - Enhanced with Premium Features
-
-// IMMEDIATE SOPHISTICATED FEATURES ACTIVATION
-(function() {
-    console.log('✨ Activating Sophisticated UI Features v3.0...');
-    
-    // Force sophisticated styles to load immediately
-    function forceSophisticatedMode() {
-        document.documentElement.style.setProperty('--refresh-indicator', 'v3.0-sophisticated');
-        document.body.classList.add('sophisticated-mode', 'premium-ui', 'enhanced-animations');
-        
-        // Add sophisticated CSS classes to key elements
-        setTimeout(() => {
-            const heroSection = document.querySelector('.hero');
-            if (heroSection) {
-                heroSection.classList.add('sophisticated-hero', 'premium-animations');
-            }
-            
-            const buttons = document.querySelectorAll('.btn');
-            buttons.forEach(btn => {
-                btn.classList.add('sophisticated-btn', 'premium-hover');
-            });
-            
-            const cards = document.querySelectorAll('.action-card, .card');
-            cards.forEach(card => {
-                card.classList.add('sophisticated-card', 'premium-effects');
-            });
-            
-            console.log('✅ Sophisticated UI features activated successfully!');
-        }, 100);
-    }
-    
-    // Activate immediately if DOM is ready, otherwise wait
-    if (document.readyState === 'loading') {
-        document.addEventListener('DOMContentLoaded', forceSophisticatedMode);
-    } else {
-        forceSophisticatedMode();
-    }
-})();
+// Modern Security Platform with Blue & White Theme
+// "Feel Safe. Stay Secure."
 
 // Global variables
 let registeredDevices = 0;
@@ -59,23 +22,200 @@ document.addEventListener('DOMContentLoaded', function() {
     setupScrollIndicator();
     setupMobileEnhancements();
     checkAuthStatus();
-    initializeSophisticatedFeatures();
-    
-    // Show sophisticated UI activation notification
-    setTimeout(() => {
-        showToast('✨ Sophisticated UI v3.0 Activated! Experience the enhanced interface.', 'success', 5000);
-    }, 1000);
+    initializeModernSecurityFeatures();
+    enhanceFormValidation();
+    setupServerConnection();
 });
 
 // Initialize the application
 function initializeApp() {
-    console.log('🛡️ Boltin Security Platform Initialized');
+    console.log('🛡️ Boltin Security Platform Initialized - Feel Safe. Stay Secure.');
     
     // Check if user is returning
     const isReturningUser = localStorage.getItem('boltin_user');
     if (isReturningUser) {
         showWelcomeMessage();
     }
+    
+    // Initialize security indicators
+    initializeSecurityIndicators();
+}
+
+// Initialize Modern Security Features
+function initializeModernSecurityFeatures() {
+    console.log('🔒 Initializing Modern Security Features...');
+    
+    // Apply clean modern styling
+    document.body.classList.add('modern-security-theme');
+    
+    // Initialize password visibility toggles
+    initializePasswordToggles();
+    
+    // Setup security animations
+    setupSecurityAnimations();
+    
+    // Initialize mobile hamburger menu
+    initializeMobileMenu();
+    
+    // Setup touch events for mobile
+    setupTouchEvents();
+    
+    // Ensure all buttons are properly linked
+    ensureButtonFunctionality();
+    
+    // Initialize chatbot with welcome animation
+    setTimeout(() => {
+        if (currentUser && authToken) {
+            showChatbotWelcome();
+        }
+    }, 2000);
+}
+
+// Initialize Mobile Menu
+function initializeMobileMenu() {
+    const hamburger = document.querySelector('.hamburger');
+    const navMenu = document.querySelector('.nav-menu');
+    
+    if (hamburger && navMenu) {
+        hamburger.addEventListener('click', function() {
+            hamburger.classList.toggle('active');
+            navMenu.classList.toggle('active');
+        });
+        
+        // Close menu when clicking outside
+        document.addEventListener('click', function(e) {
+            if (!hamburger.contains(e.target) && !navMenu.contains(e.target)) {
+                hamburger.classList.remove('active');
+                navMenu.classList.remove('active');
+            }
+        });
+        
+        // Close menu when clicking on nav links
+        const navLinks = navMenu.querySelectorAll('.nav-link');
+        navLinks.forEach(link => {
+            link.addEventListener('click', () => {
+                hamburger.classList.remove('active');
+                navMenu.classList.remove('active');
+            });
+        });
+    }
+}
+
+// Setup Touch Events for Mobile
+function setupTouchEvents() {
+    // Add touch events to all interactive elements
+    const interactiveElements = document.querySelectorAll('.btn, .nav-link, .action-card, .hamburger, .chatbot-toggle');
+    
+    interactiveElements.forEach(element => {
+        // Add touch start/end events for better mobile responsiveness
+        element.addEventListener('touchstart', function() {
+            this.style.transform = 'scale(0.98)';
+        });
+        
+        element.addEventListener('touchend', function() {
+            this.style.transform = '';
+        });
+        
+        element.addEventListener('touchcancel', function() {
+            this.style.transform = '';
+        });
+    });
+}
+
+// Ensure Button Functionality
+function ensureButtonFunctionality() {
+    // Check all action buttons and ensure they have proper click handlers
+    const actionButtons = [
+        { selector: 'button[onclick*="redirectToDashboard(\'register\')"]:not([data-linked])', action: () => redirectToDashboard('register') },
+        { selector: 'button[onclick*="redirectToDashboard(\'search\')"]:not([data-linked])', action: () => redirectToDashboard('search') },
+        { selector: 'button[onclick*="redirectToDashboard(\'reports\')"]:not([data-linked])', action: () => redirectToDashboard('reports') },
+        { selector: 'button[onclick*="redirectToDashboard(\'transfers\')"]:not([data-linked])', action: () => redirectToDashboard('transfers') },
+        { selector: 'button[onclick*="toggleChatbot()"]:not([data-linked])', action: toggleChatbot },
+        { selector: 'a[onclick*="redirectToDashboard(\'register\')"]:not([data-linked])', action: () => redirectToDashboard('register') },
+        { selector: 'a[onclick*="redirectToDashboard(\'search\')"]:not([data-linked])', action: () => redirectToDashboard('search') }
+    ];
+    
+    actionButtons.forEach(({ selector, action }) => {
+        const elements = document.querySelectorAll(selector);
+        elements.forEach(element => {
+            // Remove existing onclick to avoid conflicts
+            element.removeAttribute('onclick');
+            
+            // Add proper event listener
+            element.addEventListener('click', function(e) {
+                e.preventDefault();
+                action();
+            });
+            
+            // Mark as linked to avoid duplicate handlers
+            element.setAttribute('data-linked', 'true');
+        });
+    });
+    
+    // Ensure auth buttons work
+    const loginBtn = document.querySelector('.login-btn, button[onclick="showLoginForm()"]');
+    const registerBtn = document.querySelector('.register-btn, button[onclick="showRegisterForm()"]');
+    
+    if (loginBtn) {
+        loginBtn.removeAttribute('onclick');
+        loginBtn.addEventListener('click', function(e) {
+            e.preventDefault();
+            showLoginForm();
+        });
+    }
+    
+    if (registerBtn) {
+        registerBtn.removeAttribute('onclick');
+        registerBtn.addEventListener('click', function(e) {
+            e.preventDefault();
+            showRegisterForm();
+        });
+    }
+}
+
+// Initialize Security Indicators
+function initializeSecurityIndicators() {
+    const securityIndicator = document.querySelector('.security-indicator');
+    if (securityIndicator) {
+        securityIndicator.classList.add('animate');
+    }
+}
+
+// Setup Security Animations
+function setupSecurityAnimations() {
+    // Add lock/unlock animations for successful actions
+    const buttons = document.querySelectorAll('.btn-primary');
+    buttons.forEach(button => {
+        button.addEventListener('click', function() {
+            if (!this.classList.contains('processing')) {
+                this.classList.add('processing');
+                setTimeout(() => {
+                    this.classList.remove('processing');
+                }, 1000);
+            }
+        });
+    });
+}
+
+// Initialize Password Toggles
+function initializePasswordToggles() {
+    const passwordToggles = document.querySelectorAll('.password-toggle');
+    passwordToggles.forEach(toggle => {
+        toggle.addEventListener('click', function() {
+            const input = this.parentElement.querySelector('input');
+            const icon = this.querySelector('i');
+            
+            if (input.type === 'password') {
+                input.type = 'text';
+                icon.classList.remove('fa-eye');
+                icon.classList.add('fa-eye-slash');
+            } else {
+                input.type = 'password';
+                icon.classList.remove('fa-eye-slash');
+                icon.classList.add('fa-eye');
+            }
+        });
+    });
 }
 
 // Load statistics from backend API
@@ -1492,6 +1632,124 @@ function setupScrollIndicator() {
             }
         }, { passive: false });
     }
+    
+    // Add scroll progress indicator
+    const scrollProgress = document.createElement('div');
+    scrollProgress.className = 'scroll-progress';
+    scrollProgress.style.cssText = `
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 0%;
+        height: 3px;
+        background: var(--blue-gradient);
+        z-index: 1001;
+        transition: width 0.1s ease;
+    `;
+    document.body.appendChild(scrollProgress);
+    
+    // Update scroll progress
+    function updateScrollProgress() {
+        const scrollTop = window.pageYOffset;
+        const docHeight = document.body.scrollHeight - window.innerHeight;
+        const scrollPercent = (scrollTop / docHeight) * 100;
+        scrollProgress.style.width = scrollPercent + '%';
+    }
+    
+    window.addEventListener('scroll', updateScrollProgress);
+    
+    // Add scroll animations
+    const observerOptions = {
+        threshold: 0.1,
+        rootMargin: '0px 0px -50px 0px'
+    };
+    
+    const scrollObserver = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.classList.add('animate-in');
+            }
+        });
+    }, observerOptions);
+    
+    // Observe elements for animation
+    const animateElements = document.querySelectorAll('.action-card, .stat, .feature-item, .activity-item, .testimonial-card');
+    animateElements.forEach(el => {
+        el.classList.add('animate-on-scroll');
+        scrollObserver.observe(el);
+    });
+    
+    // Add animation styles
+    addScrollAnimationStyles();
+}
+
+// Add CSS for scroll animations
+function addScrollAnimationStyles() {
+    if (document.getElementById('scroll-animations-style')) return; // Prevent duplicates
+    
+    const style = document.createElement('style');
+    style.id = 'scroll-animations-style';
+    style.textContent = `
+        .animate-on-scroll {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        
+        .animate-on-scroll.animate-in {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        
+        .stagger-animation .action-card:nth-child(1) { transition-delay: 0.1s; }
+        .stagger-animation .action-card:nth-child(2) { transition-delay: 0.2s; }
+        .stagger-animation .action-card:nth-child(3) { transition-delay: 0.3s; }
+        .stagger-animation .action-card:nth-child(4) { transition-delay: 0.4s; }
+        .stagger-animation .action-card:nth-child(5) { transition-delay: 0.5s; }
+        
+        .hero-badge {
+            animation: fadeInUp 0.8s ease-out 0.2s both;
+        }
+        
+        .hero-title {
+            animation: fadeInUp 0.8s ease-out 0.4s both;
+        }
+        
+        .hero-subtitle {
+            animation: fadeInUp 0.8s ease-out 0.6s both;
+        }
+        
+        .hero-features {
+            animation: fadeInUp 0.8s ease-out 0.8s both;
+        }
+        
+        .hero-buttons {
+            animation: fadeInUp 0.8s ease-out 1s both;
+        }
+        
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        /* Enhanced button validation styles */
+        input.valid, textarea.valid, select.valid {
+            border-color: var(--success-green);
+            box-shadow: 0 0 0 2px rgba(16, 185, 129, 0.1);
+        }
+        
+        input.invalid, textarea.invalid, select.invalid {
+            border-color: var(--danger-red);
+            box-shadow: 0 0 0 2px rgba(239, 68, 68, 0.1);
+        }
+    `;
+    document.head.appendChild(style);
 }
 
 // Enhanced statistics with real-time updates
@@ -1513,6 +1771,60 @@ function updateLiveStats() {
             animateCounter(recoveredElement, currentRecovered, newRecovered, 1000);
         }
     }
+}
+
+// Enhanced server connectivity check
+function setupServerConnection() {
+    let isConnected = true;
+    
+    // Function to check server status
+    async function checkServerStatus() {
+        try {
+            const response = await fetch('/api/health', {
+                method: 'GET',
+                headers: {
+                    'Cache-Control': 'no-cache'
+                },
+                timeout: 5000
+            });
+            
+            if (response.ok) {
+                if (!isConnected) {
+                    isConnected = true;
+                    showToast('✅ Server connection restored', 'success');
+                    updateConnectionStatus(true);
+                }
+            } else {
+                throw new Error('Server response not OK');
+            }
+        } catch (error) {
+            if (isConnected) {
+                isConnected = false;
+                showToast('⚠️ Server connection lost. Retrying...', 'warning');
+                updateConnectionStatus(false);
+            }
+        }
+    }
+    
+    // Update connection status in UI
+    function updateConnectionStatus(connected) {
+        const indicator = document.querySelector('.security-indicator');
+        if (indicator) {
+            if (connected) {
+                indicator.innerHTML = '<i class="fas fa-shield-alt"></i> Secure Connection';
+                indicator.style.background = 'var(--success-green)';
+            } else {
+                indicator.innerHTML = '<i class="fas fa-exclamation-triangle"></i> Connection Lost';
+                indicator.style.background = 'var(--warning-orange)';
+            }
+        }
+    }
+    
+    // Check server status every 30 seconds
+    setInterval(checkServerStatus, 30000);
+    
+    // Initial check
+    setTimeout(checkServerStatus, 2000);
 }
 
 // Start live stats updates
@@ -1884,6 +2196,119 @@ function updateUIForGuestUser() {
     });
 }
 
+// Show Chatbot Welcome Animation
+function showChatbotWelcome() {
+    // Show chatbot toggle button
+    const chatbotToggle = document.querySelector('.chatbot-toggle');
+    if (chatbotToggle) {
+        chatbotToggle.style.display = 'flex';
+        chatbotToggle.style.animation = 'chatbotSlideIn 0.5s ease-out';
+        
+        // Show welcome notification
+        setTimeout(() => {
+            showChatbotWelcomeMessage();
+        }, 1000);
+    }
+}
+
+// Show Chatbot Welcome Message
+function showChatbotWelcomeMessage() {
+    const chatbotToggle = document.querySelector('.chatbot-toggle');
+    if (!chatbotToggle) return;
+    
+    // Create welcome bubble
+    const welcomeBubble = document.createElement('div');
+    welcomeBubble.className = 'chatbot-welcome-bubble';
+    welcomeBubble.innerHTML = `
+        <div class="typing-indicator">
+            <div class="typing-dot"></div>
+            <div class="typing-dot"></div>
+            <div class="typing-dot"></div>
+        </div>
+    `;
+    
+    // Position it above the chatbot toggle
+    welcomeBubble.style.cssText = `
+        position: fixed;
+        bottom: 140px;
+        right: 20px;
+        background: white;
+        border: 1px solid var(--border-light);
+        border-radius: 16px;
+        padding: 16px;
+        box-shadow: var(--shadow-lg);
+        max-width: 250px;
+        z-index: 999;
+        animation: messageSlideIn 0.3s ease-out;
+    `;
+    
+    document.body.appendChild(welcomeBubble);
+    
+    // Show typing animation for 2-3 seconds
+    setTimeout(() => {
+        welcomeBubble.innerHTML = `
+            <p style="margin: 0; color: var(--text-primary); font-size: 14px; line-height: 1.4;">
+                Welcome to Boltin! You're safe and secure here. How can I help you today?
+            </p>
+            <div style="margin-top: 8px; text-align: right;">
+                <button onclick="this.parentElement.parentElement.remove()" style="background: none; border: none; color: var(--text-muted); font-size: 12px; cursor: pointer;">Dismiss</button>
+            </div>
+        `;
+        
+        // Auto-dismiss after 5 seconds
+        setTimeout(() => {
+            if (welcomeBubble.parentElement) {
+                welcomeBubble.remove();
+            }
+        }, 5000);
+    }, 2500);
+}
+
+// Security Lock Animation for Login Success
+function showLoginSuccessAnimation() {
+    const modal = document.querySelector('.auth-modal');
+    if (!modal) return;
+    
+    // Create lock animation overlay
+    const lockOverlay = document.createElement('div');
+    lockOverlay.className = 'lock-animation-overlay';
+    lockOverlay.innerHTML = `
+        <div class="lock-animation">
+            <i class="fas fa-lock-open" style="font-size: 3rem; color: var(--success-green);"></i>
+            <p style="margin-top: 16px; color: var(--success-green); font-weight: 600;">Login Successful!</p>
+        </div>
+    `;
+    
+    lockOverlay.style.cssText = `
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(255, 255, 255, 0.95);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 20px;
+        z-index: 10;
+    `;
+    
+    const authContent = modal.querySelector('.auth-modal-content');
+    authContent.style.position = 'relative';
+    authContent.appendChild(lockOverlay);
+    
+    // Apply lock animation
+    const lockIcon = lockOverlay.querySelector('i');
+    lockIcon.style.animation = 'lockSuccess 0.6s ease-in-out';
+    
+    // Remove overlay and close modal after animation
+    setTimeout(() => {
+        lockOverlay.remove();
+        closeAuthModal();
+        showDashboard();
+    }, 1500);
+}
+
 // Show login form
 function showLoginForm() {
     const modal = document.getElementById('auth-modal');
@@ -2187,6 +2612,9 @@ async function handleLogin(e) {
             localStorage.setItem('boltin_user_data', JSON.stringify(currentUser));
             
             showToast('✅ Login successful! Welcome back.', 'success');
+            
+            // Show security lock animation
+            showLoginSuccessAnimation();
             closeAuthModal();
             updateUIForAuthenticatedUser();
             

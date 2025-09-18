@@ -246,6 +246,7 @@ async function loadStats() {
 
 // Setup all event listeners
 function setupEventListeners() {
+    console.log('🔧 Setting up event listeners...');
     setupNavigation();
     setupRegistrationForm();
     setupSearchForm();
@@ -258,6 +259,101 @@ function setupEventListeners() {
     setupAuthForms();
     setupDashboardMenu();
     setupCameraSignatureFeature();
+    
+    // Fix button functionality
+    fixButtonFunctionality();
+}
+
+// Fix button functionality
+function fixButtonFunctionality() {
+    console.log('🔧 Fixing button functionality...');
+    
+    // Auth buttons in navigation
+    const loginNavBtn = document.querySelector('button[onclick*="showLoginForm"]');
+    const registerNavBtn = document.querySelector('button[onclick*="showRegisterForm"]');
+    
+    if (loginNavBtn) {
+        loginNavBtn.removeAttribute('onclick');
+        loginNavBtn.addEventListener('click', function(e) {
+            e.preventDefault();
+            console.log('🔐 Login button clicked');
+            showLoginForm();
+        });
+    }
+    
+    if (registerNavBtn) {
+        registerNavBtn.removeAttribute('onclick');
+        registerNavBtn.addEventListener('click', function(e) {
+            e.preventDefault();
+            console.log('📝 Register button clicked');
+            showRegisterForm();
+        });
+    }
+    
+    // Hero section buttons
+    const heroButtons = document.querySelectorAll('.hero-buttons .btn');
+    heroButtons.forEach(btn => {
+        if (btn.hasAttribute('onclick')) {
+            const onclickValue = btn.getAttribute('onclick');
+            btn.removeAttribute('onclick');
+            
+            btn.addEventListener('click', function(e) {
+                e.preventDefault();
+                console.log('🚀 Hero button clicked:', onclickValue);
+                
+                if (onclickValue.includes('register')) {
+                    redirectToDashboard('register');
+                } else if (onclickValue.includes('search')) {
+                    redirectToDashboard('search');
+                }
+            });
+        }
+    });
+    
+    // Action card buttons
+    const actionButtons = document.querySelectorAll('.action-card .btn');
+    actionButtons.forEach(btn => {
+        if (btn.hasAttribute('onclick')) {
+            const onclickValue = btn.getAttribute('onclick');
+            btn.removeAttribute('onclick');
+            
+            btn.addEventListener('click', function(e) {
+                e.preventDefault();
+                console.log('⚡ Action button clicked:', onclickValue);
+                
+                if (onclickValue.includes('register')) {
+                    redirectToDashboard('register');
+                } else if (onclickValue.includes('search')) {
+                    redirectToDashboard('search');
+                } else if (onclickValue.includes('reports')) {
+                    redirectToDashboard('reports');
+                } else if (onclickValue.includes('transfers')) {
+                    redirectToDashboard('transfers');
+                } else if (onclickValue.includes('toggleChatbot')) {
+                    toggleChatbot();
+                }
+            });
+        }
+    });
+    
+    // Chatbot toggle button
+    const chatbotToggle = document.querySelector('.chatbot-toggle');
+    if (chatbotToggle) {
+        chatbotToggle.removeAttribute('onclick');
+        chatbotToggle.addEventListener('click', function(e) {
+            e.preventDefault();
+            console.log('🤖 Chatbot toggle clicked');
+            toggleChatbot();
+        });
+    }
+    
+    // Close auth modal when clicking outside
+    document.addEventListener('click', function(e) {
+        const modal = document.getElementById('auth-modal');
+        if (modal && e.target === modal) {
+            closeAuthModal();
+        }
+    });
 }
 
 // Setup additional button functionality
@@ -2309,52 +2405,36 @@ function showLoginSuccessAnimation() {
     }, 1500);
 }
 
-// Show login form
+// Show login form with new professional interface
 function showLoginForm() {
     const modal = document.getElementById('auth-modal');
-    const loginContainer = document.getElementById('login-form-container');
-    const registerContainer = document.getElementById('register-form-container');
-    const modalTitle = document.getElementById('auth-modal-title');
-    
-    if (modal && loginContainer && registerContainer) {
-        loginContainer.style.display = 'block';
-        registerContainer.style.display = 'none';
-        modalTitle.textContent = 'Welcome Back to BOLTIN';
+    if (modal) {
         modal.style.display = 'flex';
         
+        // Focus on email input for better UX
         setTimeout(() => {
-            document.getElementById('login-email').focus();
+            const emailInput = document.getElementById('login-email');
+            if (emailInput) {
+                emailInput.focus();
+            }
         }, 100);
     }
 }
 
-// Show register form
+// Show register form with new professional interface
 function showRegisterForm() {
     const modal = document.getElementById('auth-modal');
-    const loginContainer = document.getElementById('login-form-container');
-    const registerContainer = document.getElementById('register-form-container');
-    const modalTitle = document.getElementById('auth-modal-title');
-    
-    if (modal && loginContainer && registerContainer) {
-        loginContainer.style.display = 'none';
-        registerContainer.style.display = 'block';
-        modalTitle.textContent = 'Join BOLTIN Security';
+    if (modal) {
         modal.style.display = 'flex';
         
+        // Focus on username input for better UX
         setTimeout(() => {
-            document.getElementById('register-firstname').focus();
+            const usernameInput = document.getElementById('register-username');
+            if (usernameInput) {
+                usernameInput.focus();
+            }
         }, 100);
     }
-}
-
-// Switch to register form
-function switchToRegister() {
-    showRegisterForm();
-}
-
-// Switch to login form
-function switchToLogin() {
-    showLoginForm();
 }
 
 // Close authentication modal
@@ -2535,21 +2615,19 @@ function updateDashboardStats(stats) {
 
 // Setup authentication forms
 function setupAuthForms() {
+    console.log('🔐 Setting up auth forms...');
     const loginForm = document.getElementById('login-form');
     const registerForm = document.getElementById('user-register-form');
-    const cameraSignatureInput = document.getElementById('camera-signature');
     const registerPasswordInput = document.getElementById('register-password');
     
     if (loginForm) {
         loginForm.addEventListener('submit', handleLogin);
+        console.log('✅ Login form event listener added');
     }
     
     if (registerForm) {
         registerForm.addEventListener('submit', handleRegister);
-    }
-    
-    if (cameraSignatureInput) {
-        cameraSignatureInput.addEventListener('change', handleCameraSignatureUpload);
+        console.log('✅ Register form event listener added');
     }
     
     if (registerPasswordInput) {
@@ -2557,38 +2635,61 @@ function setupAuthForms() {
             checkPasswordStrength(this.value);
         });
     }
+}
+
+// Check password strength
+function checkPasswordStrength(password) {
+    const strengthElement = document.getElementById('password-strength');
+    const strengthText = document.getElementById('password-strength-text');
     
-    // Close modal when clicking outside
-    document.addEventListener('click', function(e) {
-        const modal = document.getElementById('auth-modal');
-        if (e.target === modal) {
-            closeAuthModal();
-        }
-    });
+    if (!strengthElement || !strengthText) return;
     
-    // Close user dropdown when clicking outside
-    document.addEventListener('click', function(e) {
-        const userMenu = document.querySelector('.user-menu');
-        const dropdown = document.getElementById('user-dropdown');
-        
-        if (dropdown && !userMenu.contains(e.target)) {
-            dropdown.classList.remove('show');
-        }
-    });
+    let strength = 0;
+    let feedback = 'Enter a password';
+    
+    if (password.length >= 8) strength++;
+    if (/[a-z]/.test(password)) strength++;
+    if (/[A-Z]/.test(password)) strength++;
+    if (/[0-9]/.test(password)) strength++;
+    if (/[^A-Za-z0-9]/.test(password)) strength++;
+    
+    // Remove existing classes
+    strengthElement.className = 'password-strength';
+    
+    if (strength === 0) {
+        feedback = 'Enter a password';
+    } else if (strength <= 2) {
+        strengthElement.classList.add('weak');
+        feedback = 'Weak password';
+    } else if (strength <= 3) {
+        strengthElement.classList.add('medium');
+        feedback = 'Medium password';
+    } else {
+        strengthElement.classList.add('strong');
+        feedback = 'Strong password';
+    }
+    
+    strengthText.textContent = feedback;
+    strengthText.style.color = strength <= 2 ? 'var(--error-red)' : 
+                              strength <= 3 ? 'var(--warning-orange)' : 
+                              'var(--success-green)';
 }
 
 // Handle login form submission
 async function handleLogin(e) {
     e.preventDefault();
+    console.log('🔐 Handling login submission...');
     
     const formData = new FormData(e.target);
     const loginData = {
         email: formData.get('email'),
         password: formData.get('password'),
-        rememberMe: document.getElementById('remember-me').checked
+        rememberMe: document.getElementById('remember-me') ? document.getElementById('remember-me').checked : false
     };
     
-    const submitButton = e.target.querySelector('.auth-submit-btn');
+    console.log('Login data:', { email: loginData.email, rememberMe: loginData.rememberMe });
+    
+    const submitButton = e.target.querySelector('.auth-btn');
     const originalText = submitButton.innerHTML;
     submitButton.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Signing In...';
     submitButton.disabled = true;
@@ -2603,6 +2704,7 @@ async function handleLogin(e) {
         });
         
         const result = await response.json();
+        console.log('Login response:', result);
         
         if (result.success) {
             // Store auth data
@@ -2877,6 +2979,9 @@ function showProfile() {
         }
     }, 500);
 }
+
+// Setup camera signature feature
+function setupCameraSignatureFeature() {
     const deviceTypeSelect = document.getElementById('device-type');
     const cameraSignatureGroup = document.getElementById('camera-signature-group');
     

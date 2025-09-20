@@ -1,0 +1,689 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Camera Registration & Recovery Demo - BOLTIN Security</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .demo-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+
+        .demo-header {
+            background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+
+        .demo-header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+
+        .demo-header p {
+            font-size: 1.2em;
+            opacity: 0.9;
+        }
+
+        .demo-content {
+            padding: 30px;
+        }
+
+        .demo-section {
+            margin-bottom: 40px;
+            padding: 25px;
+            border: 2px solid #e1e5e9;
+            border-radius: 15px;
+            position: relative;
+        }
+
+        .demo-section.completed {
+            border-color: #27ae60;
+            background: linear-gradient(135deg, #d5f4e6 0%, #f8fffe 100%);
+        }
+
+        .demo-section.active {
+            border-color: #f39c12;
+            background: linear-gradient(135deg, #fef9e7 0%, #fff 100%);
+        }
+
+        .demo-section.warning {
+            border-color: #e74c3c;
+            background: linear-gradient(135deg, #ffeaea 0%, #fff 100%);
+        }
+
+        .section-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .section-number {
+            background: #3498db;
+            color: white;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            margin-right: 15px;
+        }
+
+        .completed .section-number {
+            background: #27ae60;
+        }
+
+        .warning .section-number {
+            background: #e74c3c;
+        }
+
+        .section-title {
+            font-size: 1.5em;
+            color: #2c3e50;
+        }
+
+        .device-card {
+            background: linear-gradient(135deg, #f8f9fa 0%, #fff 100%);
+            border: 1px solid #dee2e6;
+            border-radius: 10px;
+            padding: 20px;
+            margin: 15px 0;
+        }
+
+        .device-info {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 15px;
+            margin: 15px 0;
+        }
+
+        .info-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 8px 0;
+            border-bottom: 1px solid #eee;
+        }
+
+        .info-label {
+            font-weight: 600;
+            color: #495057;
+        }
+
+        .info-value {
+            color: #6c757d;
+            text-align: right;
+        }
+
+        .status-badge {
+            display: inline-block;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 0.9em;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+        .status-safe {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .status-stolen {
+            background: #f8d7da;
+            color: #721c24;
+        }
+
+        .status-recovered {
+            background: #cce5ff;
+            color: #004085;
+        }
+
+        .search-demo {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 20px;
+            margin: 15px 0;
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #dee2e6;
+            border-radius: 8px;
+            font-size: 1.1em;
+            margin-bottom: 10px;
+        }
+
+        .search-results {
+            background: white;
+            border: 1px solid #dee2e6;
+            border-radius: 8px;
+            padding: 15px;
+            margin-top: 10px;
+        }
+
+        .demo-button {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 8px;
+            font-size: 1em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin: 5px;
+        }
+
+        .demo-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+
+        .demo-button:disabled {
+            background: #6c757d;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .timeline {
+            position: relative;
+            padding-left: 30px;
+        }
+
+        .timeline-item {
+            position: relative;
+            padding: 10px 0;
+            border-left: 2px solid #dee2e6;
+            padding-left: 20px;
+            margin-bottom: 15px;
+        }
+
+        .timeline-item::before {
+            content: '';
+            position: absolute;
+            left: -6px;
+            top: 15px;
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: #6c757d;
+        }
+
+        .timeline-item.completed::before {
+            background: #27ae60;
+        }
+
+        .timeline-item.warning::before {
+            background: #e74c3c;
+        }
+
+        .recovery-info {
+            background: linear-gradient(135deg, #e3f2fd 0%, #fff 100%);
+            border: 1px solid #bbdefb;
+            border-radius: 10px;
+            padding: 20px;
+            margin: 15px 0;
+        }
+
+        .alert {
+            padding: 15px;
+            border-radius: 8px;
+            margin: 15px 0;
+            font-weight: 600;
+        }
+
+        .alert-success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+
+        .alert-warning {
+            background: #fff3cd;
+            color: #856404;
+            border: 1px solid #ffeaa7;
+        }
+
+        .alert-danger {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+
+        .camera-icon {
+            font-size: 3em;
+            text-align: center;
+            margin: 20px 0;
+        }
+
+        @media (max-width: 768px) {
+            .demo-content {
+                padding: 15px;
+            }
+            
+            .device-info {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <div class="demo-container">
+        <div class="demo-header">
+            <h1>📸 BOLTIN Security Camera Demo</h1>
+            <p>Complete Device Registration & Recovery Demonstration</p>
+        </div>
+
+        <div class="demo-content">
+            <!-- Section 1: Camera Registration -->
+            <div class="demo-section completed" id="section-registration">
+                <div class="section-header">
+                    <div class="section-number">1</div>
+                    <div class="section-title">📷 Professional Camera Registration</div>
+                </div>
+                
+                <div class="device-card">
+                    <div class="camera-icon">
+                        <i class="fas fa-camera" style="color: #667eea;"></i>
+                    </div>
+                    
+                    <div class="device-info">
+                        <div class="info-item">
+                            <span class="info-label">Brand & Model:</span>
+                            <span class="info-value">Canon EOS R5</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">Owner:</span>
+                            <span class="info-value">Alex Photography</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">Primary Serial:</span>
+                            <span class="info-value" id="primary-serial">CNR51758368978160</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">Body Serial:</span>
+                            <span class="info-value" id="body-serial">38421758368978160</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">Lens Serial:</span>
+                            <span class="info-value" id="lens-serial">RF70021758368978160</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">Shutter Count:</span>
+                            <span class="info-value">15,420 shots</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">Registration Date:</span>
+                            <span class="info-value">September 20, 2025</span>
+                        </div>
+                    </div>
+                    
+                    <div class="alert alert-success">
+                        ✅ Camera successfully registered with multiple identification numbers for enhanced security tracking
+                    </div>
+                </div>
+            </div>
+
+            <!-- Section 2: Search Testing -->
+            <div class="demo-section completed" id="section-search">
+                <div class="section-header">
+                    <div class="section-number">2</div>
+                    <div class="section-title">🔍 Multi-Identifier Search Testing</div>
+                </div>
+                
+                <div class="search-demo">
+                    <h4>Test device search using any identification number:</h4>
+                    <input type="text" class="search-input" id="search-input" placeholder="Enter any serial number (Primary, Body, or Lens)">
+                    <button class="demo-button" onclick="performSearch()">Search Device</button>
+                    <button class="demo-button" onclick="fillPrimarySerial()">Try Primary Serial</button>
+                    <button class="demo-button" onclick="fillBodySerial()">Try Body Serial</button>
+                    <button class="demo-button" onclick="fillLensSerial()">Try Lens Serial</button>
+                    
+                    <div class="search-results" id="search-results" style="display: none;">
+                        <!-- Search results will appear here -->
+                    </div>
+                </div>
+                
+                <div class="alert alert-success">
+                    ✅ All identification numbers (Primary, Body, Lens) are searchable and return accurate device information
+                </div>
+            </div>
+
+            <!-- Section 3: Theft Report -->
+            <div class="demo-section warning" id="section-theft">
+                <div class="section-header">
+                    <div class="section-number">3</div>
+                    <div class="section-title">🚨 Theft Report Filed</div>
+                </div>
+                
+                <div class="device-card">
+                    <h4>Incident Details:</h4>
+                    <div class="device-info">
+                        <div class="info-item">
+                            <span class="info-label">Report Type:</span>
+                            <span class="info-value">STOLEN</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">Location:</span>
+                            <span class="info-value">Photography Studio, 123 Main Street</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">Report Number:</span>
+                            <span class="info-value">BR978352079</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">Police Report:</span>
+                            <span class="info-value">POL1758368978347</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">Status:</span>
+                            <span class="info-value"><span class="status-badge status-recovered">RECOVERED</span></span>
+                        </div>
+                    </div>
+                    
+                    <div class="alert alert-warning">
+                        ⚠️ Device status immediately updated across all search systems to warn potential buyers
+                    </div>
+                </div>
+            </div>
+
+            <!-- Section 4: Public Safety Check -->
+            <div class="demo-section active" id="section-public">
+                <div class="section-header">
+                    <div class="section-number">4</div>
+                    <div class="section-title">👮 Public Safety Verification</div>
+                </div>
+                
+                <div class="search-demo">
+                    <h4>Public Theft Status Check (What buyers see):</h4>
+                    <input type="text" class="search-input" id="public-search" placeholder="Enter serial number for public check">
+                    <button class="demo-button" onclick="performPublicCheck()">Check Public Status</button>
+                    <button class="demo-button" onclick="fillPublicSerial()">Use Camera Serial</button>
+                    
+                    <div class="search-results" id="public-results" style="display: none;">
+                        <!-- Public check results will appear here -->
+                    </div>
+                </div>
+                
+                <div class="alert alert-danger">
+                    🚨 Public checks show clear theft warnings to protect potential buyers from purchasing stolen goods
+                </div>
+            </div>
+
+            <!-- Section 5: Recovery Process -->
+            <div class="demo-section completed" id="section-recovery">
+                <div class="section-header">
+                    <div class="section-number">5</div>
+                    <div class="section-title">🎉 Device Recovery</div>
+                </div>
+                
+                <div class="recovery-info">
+                    <h4>Recovery Details:</h4>
+                    <div class="device-info">
+                        <div class="info-item">
+                            <span class="info-label">Recovery Date:</span>
+                            <span class="info-value">September 20, 2025</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">Found Location:</span>
+                            <span class="info-value">Police Station Evidence Room</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">Recovered By:</span>
+                            <span class="info-value">Detective Mike Rodriguez - Badge #8829</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">Condition:</span>
+                            <span class="info-value">Excellent - All accessories intact</span>
+                        </div>
+                    </div>
+                    
+                    <p><strong>Recovery Story:</strong> Camera recovered by police from suspect during arrest. Device is in excellent condition with all accessories intact.</p>
+                </div>
+                
+                <div class="alert alert-success">
+                    ✅ Complete recovery process documented with full chain of custody information
+                </div>
+            </div>
+
+            <!-- Section 6: Complete Audit Trail -->
+            <div class="demo-section completed" id="section-audit">
+                <div class="section-header">
+                    <div class="section-number">6</div>
+                    <div class="section-title">📋 Complete History & Audit Trail</div>
+                </div>
+                
+                <div class="timeline">
+                    <div class="timeline-item completed">
+                        <strong>Device Registration</strong><br>
+                        September 20, 2025 - Camera registered with complete identification details
+                    </div>
+                    <div class="timeline-item warning">
+                        <strong>Theft Report Filed</strong><br>
+                        September 20, 2025 - Studio break-in reported, police case opened
+                    </div>
+                    <div class="timeline-item completed">
+                        <strong>Device Recovered</strong><br>
+                        September 20, 2025 - Camera recovered by police, returned to owner
+                    </div>
+                </div>
+                
+                <div class="device-card">
+                    <h4>System Features Demonstrated:</h4>
+                    <ul style="margin: 15px 0; padding-left: 20px;">
+                        <li>✅ Multi-identifier registration (Primary, Body, Lens serials)</li>
+                        <li>✅ Comprehensive search across all identification numbers</li>
+                        <li>✅ Instant status updates across all platforms</li>
+                        <li>✅ Public theft verification system</li>
+                        <li>✅ Police integration and reporting</li>
+                        <li>✅ Complete recovery documentation</li>
+                        <li>✅ Full audit trail and history tracking</li>
+                    </ul>
+                </div>
+                
+                <div class="alert alert-success">
+                    🎉 All camera security and recovery features working perfectly! The device can be safely returned to its owner with complete documentation.
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <script>
+        const API_BASE = '/api';
+        
+        // Use the actual camera data from our test
+        const cameraData = {
+            primarySerial: 'CNR51758368978160',
+            bodySerial: '38421758368978160',
+            lensSerial: 'RF70021758368978160'
+        };
+
+        function fillPrimarySerial() {
+            document.getElementById('search-input').value = cameraData.primarySerial;
+        }
+
+        function fillBodySerial() {
+            document.getElementById('search-input').value = cameraData.bodySerial;
+        }
+
+        function fillLensSerial() {
+            document.getElementById('search-input').value = cameraData.lensSerial;
+        }
+
+        function fillPublicSerial() {
+            document.getElementById('public-search').value = cameraData.primarySerial;
+        }
+
+        async function performSearch() {
+            const searchInput = document.getElementById('search-input');
+            const resultsDiv = document.getElementById('search-results');
+            const serial = searchInput.value.trim();
+            
+            if (!serial) {
+                alert('Please enter a serial number to search');
+                return;
+            }
+            
+            try {
+                const response = await fetch(`${API_BASE}/search/serial/${encodeURIComponent(serial)}`);
+                const result = await response.json();
+                
+                resultsDiv.style.display = 'block';
+                
+                if (result.success && result.data) {
+                    const device = result.data.device;
+                    const status = result.data.status;
+                    
+                    resultsDiv.innerHTML = `
+                        <h4>🔍 Search Results</h4>
+                        <div class="device-info">
+                            <div class="info-item">
+                                <span class="info-label">Device Found:</span>
+                                <span class="info-value">✅ Yes</span>
+                            </div>
+                            <div class="info-item">
+                                <span class="info-label">Brand/Model:</span>
+                                <span class="info-value">${device.brand} ${device.model}</span>
+                            </div>
+                            <div class="info-item">
+                                <span class="info-label">Device Type:</span>
+                                <span class="info-value">${device.deviceType}</span>
+                            </div>
+                            <div class="info-item">
+                                <span class="info-label">Status:</span>
+                                <span class="info-value">${status.message}</span>
+                            </div>
+                            <div class="info-item">
+                                <span class="info-label">Match Type:</span>
+                                <span class="info-value">${result.data.matchType || 'exact_serial'}</span>
+                            </div>
+                        </div>
+                        <div class="alert alert-success">
+                            ✅ Device found using ${serial}
+                        </div>
+                    `;
+                } else {
+                    resultsDiv.innerHTML = `
+                        <h4>🔍 Search Results</h4>
+                        <div class="alert alert-warning">
+                            ❌ No device found with serial number: ${serial}
+                        </div>
+                    `;
+                }
+            } catch (error) {
+                resultsDiv.style.display = 'block';
+                resultsDiv.innerHTML = `
+                    <h4>🔍 Search Results</h4>
+                    <div class="alert alert-danger">
+                        ❌ Search error: ${error.message}
+                    </div>
+                `;
+            }
+        }
+
+        async function performPublicCheck() {
+            const searchInput = document.getElementById('public-search');
+            const resultsDiv = document.getElementById('public-results');
+            const serial = searchInput.value.trim();
+            
+            if (!serial) {
+                alert('Please enter a serial number for public check');
+                return;
+            }
+            
+            try {
+                const response = await fetch(`${API_BASE}/reports/public/${encodeURIComponent(serial)}`);
+                const result = await response.json();
+                
+                resultsDiv.style.display = 'block';
+                
+                if (result.success && result.data) {
+                    const data = result.data;
+                    
+                    if (data.reported) {
+                        resultsDiv.innerHTML = `
+                            <h4>🚨 PUBLIC THEFT WARNING</h4>
+                            <div class="alert alert-danger">
+                                <strong>⚠️ WARNING: This device has been reported as ${data.reportType.toUpperCase()}!</strong>
+                            </div>
+                            <div class="device-info">
+                                <div class="info-item">
+                                    <span class="info-label">Report Type:</span>
+                                    <span class="info-value">${data.reportType.toUpperCase()}</span>
+                                </div>
+                                <div class="info-item">
+                                    <span class="info-label">Warning Level:</span>
+                                    <span class="info-value">${data.warningLevel.toUpperCase()}</span>
+                                </div>
+                                <div class="info-item">
+                                    <span class="info-label">Report Number:</span>
+                                    <span class="info-value">${data.reportNumber}</span>
+                                </div>
+                                <div class="info-item">
+                                    <span class="info-label">Message:</span>
+                                    <span class="info-value">${data.message}</span>
+                                </div>
+                            </div>
+                            <div class="alert alert-warning">
+                                🚫 DO NOT PURCHASE - Contact local authorities if offered this device
+                            </div>
+                        `;
+                    } else {
+                        resultsDiv.innerHTML = `
+                            <h4>✅ Public Safety Check</h4>
+                            <div class="alert alert-success">
+                                ✅ No active reports found for this device - Safe to purchase
+                            </div>
+                        `;
+                    }
+                } else {
+                    resultsDiv.innerHTML = `
+                        <h4>❌ Public Check Failed</h4>
+                        <div class="alert alert-danger">
+                            Error: ${result.error || 'Unknown error occurred'}
+                        </div>
+                    `;
+                }
+            } catch (error) {
+                resultsDiv.style.display = 'block';
+                resultsDiv.innerHTML = `
+                    <h4>❌ Public Check Error</h4>
+                    <div class="alert alert-danger">
+                        Error: ${error.message}
+                    </div>
+                `;
+            }
+        }
+
+        // Auto-fill the serials on page load
+        window.addEventListener('load', function() {
+            document.getElementById('search-input').placeholder = `Try: ${cameraData.primarySerial}`;
+            document.getElementById('public-search').placeholder = `Try: ${cameraData.primarySerial}`;
+        });
+    </script>
+</body>
+</html>

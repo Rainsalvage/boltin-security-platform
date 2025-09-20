@@ -1,5 +1,6 @@
 const express = require('express');
-const router = express.Router();
+const { Router } = require('express');
+const router = Router();
 const { devicesDB, reportsDB } = require('../utils/database');
 const { DeviceAnalyzer } = require('../utils/deviceProfiles');
 const { 

@@ -1,5 +1,7 @@
 const express = require('express');
-const router = express.Router();
+const { Router } = require('express');
+const { body } = require('express-validator');
+const router = Router();
 const { devicesDB, reportsDB } = require('../utils/database');
 const { 
     reportValidationRules, 
@@ -17,14 +19,14 @@ const {
 router.get('/', asyncHandler(async (req, res) => {
     const page = parseInt(req.query.page) || 1;
     const limit = parseInt(req.query.limit) || 10;
-    const type = req.query.type; // 'lost' or 'stolen'
-    const status = req.query.status; // 'active', 'resolved', 'closed'
+    const type = req.query.type; // 'lost', 'stolen', 'missing', or 'found'
+    const status = req.query.status; // 'active', 'resolved', 'closed', 'pending_pickup', 'completed'
     
     let criteria = {};
-    if (type && ['lost', 'stolen'].includes(type)) {
+    if (type && ['lost', 'stolen', 'missing', 'found'].includes(type)) {
         criteria.reportType = type;
     }
-    if (status && ['active', 'resolved', 'closed'].includes(status)) {
+    if (status && ['active', 'resolved', 'closed', 'pending_pickup', 'completed'].includes(status)) {
         criteria.status = status;
     }
 
@@ -183,6 +185,179 @@ router.post('/:id/found',
     })
 );
 
+// POST /api/reports/found-device - Report a found device
+router.post('/found-device',
+    [
+        body('serialNumber')
+            .trim()
+            .isLength({ min: 5 })
+            .withMessage('Serial number must be at least 5 characters'),
+        body('finderName')
+            .trim()
+            .isLength({ min: 2, max: 100 })
+            .withMessage('Finder name must be between 2 and 100 characters'),
+        body('finderContact')
+            .trim()
+            .isLength({ min: 5, max: 100 })
+            .withMessage('Finder contact must be between 5 and 100 characters'),
+        body('foundLocation')
+            .trim()
+            .isLength({ min: 3, max: 200 })
+            .withMessage('Found location must be between 3 and 200 characters'),
+        body('pickupLocation')
+            .trim()
+            .isLength({ min: 3, max: 200 })
+            .withMessage('Pickup location must be between 3 and 200 characters'),
+        body('deviceDescription')
+            .trim()
+            .isLength({ min: 10, max: 500 })
+            .withMessage('Device description must be between 10 and 500 characters'),
+        body('foundDate')
+            .isISO8601()
+            .toDate()
+            .withMessage('Invalid found date'),
+        body('additionalNotes')
+            .optional()
+            .trim()
+            .isLength({ max: 500 })
+            .withMessage('Additional notes cannot exceed 500 characters')
+    ],
+    handleValidationErrors,
+    asyncHandler(async (req, res) => {
+        const {
+            serialNumber,
+            finderName,
+            finderContact,
+            foundLocation,
+            pickupLocation,
+            deviceDescription,
+            foundDate,
+            additionalNotes
+        } = req.body;
+        
+        const serialUpper = serialNumber.trim().toUpperCase();
+        
+        // Check if device exists in our system
+        const device = await devicesDB.findOne({ 
+            serialNumber: serialUpper 
+        });
+        
+        // Check if there's an active missing/lost report for this device
+        const existingReport = await reportsDB.findOne({ 
+            serialNumber: serialUpper,
+            status: 'active',
+            reportType: { $in: ['missing', 'lost'] }
+        });
+        
+        // Generate found device report number
+        const foundReportNumber = `FD${Date.now().toString().slice(-6)}${Math.floor(Math.random() * 1000).toString().padStart(3, '0')}`;
+        
+        // Create found device report
+        const foundDeviceReport = await reportsDB.create({
+            reportType: 'found',
+            reportNumber: foundReportNumber,
+            serialNumber: serialUpper,
+            deviceId: device ? device.id : null,
+            deviceRegistered: !!device,
+            finderName: finderName.trim(),
+            finderContact: finderContact.trim(),
+            foundLocation: foundLocation.trim(),
+            pickupLocation: pickupLocation.trim(),
+            deviceDescription: deviceDescription.trim(),
+            foundDate,
+            additionalNotes: additionalNotes?.trim() || '',
+            status: 'pending_pickup',
+            notificationSent: false,
+            reportIP: req.ip
+        });
+        
+        // If there's an active missing/lost report, link them
+        if (existingReport) {
+            await reportsDB.update(existingReport.id, {
+                linkedFoundReport: foundDeviceReport.id,
+                statusNotes: `Potentially found - Found Report #${foundReportNumber}`,
+                statusUpdatedAt: new Date().toISOString()
+            });
+            
+            // Update found report with linked missing report
+            await reportsDB.update(foundDeviceReport.id, {
+                linkedMissingReport: existingReport.id,
+                originalOwnerContact: existingReport.ownerContact
+            });
+        }
+        
+        sendSuccess(res, {
+            foundReport: foundDeviceReport,
+            device: device ? {
+                brand: device.brand,
+                model: device.model,
+                deviceType: device.deviceType,
+                registered: true
+            } : { registered: false },
+            linkedToMissingReport: !!existingReport,
+            missingReportId: existingReport ? existingReport.id : null
+        }, 'Found device report created successfully', 201);
+    })
+);
+
+// POST /api/reports/found/:id/confirm-pickup - Confirm device pickup
+router.post('/found/:id/confirm-pickup',
+    idValidationRules(),
+    [
+        body('confirmedBy')
+            .trim()
+            .isLength({ min: 2, max: 100 })
+            .withMessage('Confirmed by field must be between 2 and 100 characters'),
+        body('confirmationNotes')
+            .optional()
+            .trim()
+            .isLength({ max: 500 })
+            .withMessage('Confirmation notes cannot exceed 500 characters')
+    ],
+    handleValidationErrors,
+    asyncHandler(async (req, res) => {
+        const { confirmedBy, confirmationNotes } = req.body;
+        
+        const foundReport = await reportsDB.findById(req.params.id);
+        
+        if (!foundReport) {
+            return sendError(res, 'Found device report not found', 404);
+        }
+        
+        if (foundReport.reportType !== 'found') {
+            return sendError(res, 'This is not a found device report', 400);
+        }
+        
+        if (foundReport.status === 'completed') {
+            return sendError(res, 'Device pickup already confirmed', 400);
+        }
+        
+        // Update found report to completed
+        const updatedFoundReport = await reportsDB.update(req.params.id, {
+            status: 'completed',
+            pickedUpAt: new Date().toISOString(),
+            confirmedBy: confirmedBy.trim(),
+            confirmationNotes: confirmationNotes?.trim() || '',
+            statusUpdatedAt: new Date().toISOString()
+        });
+        
+        // If there's a linked missing report, update it to resolved
+        if (foundReport.linkedMissingReport) {
+            await reportsDB.update(foundReport.linkedMissingReport, {
+                status: 'resolved',
+                recoveredAt: new Date().toISOString(),
+                recoveryDetails: `Device recovered through found report #${foundReport.reportNumber}`,
+                statusUpdatedAt: new Date().toISOString()
+            });
+        }
+        
+        sendSuccess(res, {
+            foundReport: updatedFoundReport,
+            linkedMissingReportUpdated: !!foundReport.linkedMissingReport
+        }, 'Device pickup confirmed successfully');
+    })
+);
+
 // GET /api/reports/device/:serial - Get all reports for a specific device
 router.get('/device/:serial', asyncHandler(async (req, res) => {
     const serialNumber = req.params.serial.toUpperCase();
@@ -220,6 +395,8 @@ router.get('/statistics', asyncHandler(async (req, res) => {
     const resolvedReports = reports.filter(r => r.status === 'resolved').length;
     const stolenReports = reports.filter(r => r.reportType === 'stolen').length;
     const lostReports = reports.filter(r => r.reportType === 'lost').length;
+    const missingReports = reports.filter(r => r.reportType === 'missing').length;
+    const foundReports = reports.filter(r => r.reportType === 'found').length;
     
     // Recovery rate
     const recoveryRate = totalReports > 0 ? Math.round((resolvedReports / totalReports) * 100) : 0;
@@ -263,6 +440,8 @@ router.get('/statistics', asyncHandler(async (req, res) => {
             resolvedReports,
             stolenReports,
             lostReports,
+            missingReports,
+            foundReports,
             recoveryRate
         },
         recentActivity: {

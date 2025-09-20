@@ -2274,10 +2274,11 @@ function updateUIForAuthenticatedUser() {
     if (authButtons) authButtons.style.display = 'none';
     if (userMenu) userMenu.style.display = 'block';
     if (userNameDisplay && currentUser) {
-        userNameDisplay.textContent = `${currentUser.firstName} ${currentUser.lastName}`;
+        const displayName = currentUser.username || currentUser.firstName || 'User';
+        userNameDisplay.textContent = displayName;
     }
     
-    // Show auth-required menu items
+    // Show auth-required navigation items
     authRequiredItems.forEach(item => {
         item.style.display = 'block';
     });
@@ -2292,7 +2293,7 @@ function updateUIForGuestUser() {
     if (authButtons) authButtons.style.display = 'flex';
     if (userMenu) userMenu.style.display = 'none';
     
-    // Hide auth-required menu items
+    // Hide auth-required navigation items
     authRequiredItems.forEach(item => {
         item.style.display = 'none';
     });
@@ -2417,6 +2418,9 @@ function showLoginForm() {
     if (modal) {
         modal.style.display = 'flex';
         
+        // Initialize modal state - show login, hide register
+        initializeAuthModal('login');
+        
         // Focus on email input for better UX
         setTimeout(() => {
             const emailInput = document.getElementById('login-email');
@@ -2433,6 +2437,9 @@ function showRegisterForm() {
     if (modal) {
         modal.style.display = 'flex';
         
+        // Initialize modal state - show register, hide login
+        initializeAuthModal('register');
+        
         // Focus on username input for better UX
         setTimeout(() => {
             const usernameInput = document.getElementById('register-username');
@@ -2443,11 +2450,83 @@ function showRegisterForm() {
     }
 }
 
+// Initialize authentication modal state
+function initializeAuthModal(mode = 'login') {
+    const loginSection = document.querySelector('.login-section');
+    const registerSection = document.querySelector('.register-section');
+    
+    if (loginSection && registerSection) {
+        // Reset any transformations
+        loginSection.style.transform = 'translateX(0)';
+        loginSection.style.opacity = '1';
+        registerSection.style.transform = 'translateX(0)';
+        registerSection.style.opacity = '1';
+        
+        if (mode === 'login') {
+            loginSection.style.display = 'block';
+            registerSection.style.display = 'none';
+        } else {
+            loginSection.style.display = 'none';
+            registerSection.style.display = 'block';
+        }
+    }
+}
+
 // Close authentication modal
 function closeAuthModal() {
     const modal = document.getElementById('auth-modal');
     if (modal) {
         modal.style.display = 'none';
+    }
+}
+
+// Switch to registration form
+function switchToRegister() {
+    const loginSection = document.querySelector('.login-section');
+    const registerSection = document.querySelector('.register-section');
+    
+    if (loginSection && registerSection) {
+        // Add slide animation classes
+        loginSection.style.transform = 'translateX(-100%)';
+        loginSection.style.opacity = '0';
+        
+        setTimeout(() => {
+            loginSection.style.display = 'none';
+            registerSection.style.display = 'block';
+            registerSection.style.transform = 'translateX(0)';
+            registerSection.style.opacity = '1';
+            
+            // Focus on username input
+            const usernameInput = document.getElementById('register-username');
+            if (usernameInput) {
+                usernameInput.focus();
+            }
+        }, 150);
+    }
+}
+
+// Switch to login form
+function switchToLogin() {
+    const loginSection = document.querySelector('.login-section');
+    const registerSection = document.querySelector('.register-section');
+    
+    if (loginSection && registerSection) {
+        // Add slide animation classes
+        registerSection.style.transform = 'translateX(100%)';
+        registerSection.style.opacity = '0';
+        
+        setTimeout(() => {
+            registerSection.style.display = 'none';
+            loginSection.style.display = 'block';
+            loginSection.style.transform = 'translateX(0)';
+            loginSection.style.opacity = '1';
+            
+            // Focus on email input
+            const emailInput = document.getElementById('login-email');
+            if (emailInput) {
+                emailInput.focus();
+            }
+        }, 150);
     }
 }
 
@@ -2744,31 +2823,34 @@ async function handleLogin(e) {
 // Handle register form submission
 async function handleRegister(e) {
     e.preventDefault();
+    console.log('📝 Handling registration submission...');
     
     const formData = new FormData(e.target);
     const registerData = {
-        firstName: formData.get('firstName'),
-        lastName: formData.get('lastName'),
+        username: formData.get('username'),
         email: formData.get('email'),
-        phone: formData.get('phone'),
-        password: formData.get('password'),
-        confirmPassword: formData.get('confirmPassword'),
-        address: formData.get('address')
+        password: formData.get('password')
     };
     
-    // Validate passwords match
-    if (registerData.password !== registerData.confirmPassword) {
-        showToast('❌ Passwords do not match', 'error');
+    console.log('Registration data:', { username: registerData.username, email: registerData.email });
+    
+    // Basic validation
+    if (!registerData.username || registerData.username.trim().length < 2) {
+        showToast('❌ Please enter a valid username', 'error');
         return;
     }
     
-    // Check terms agreement
-    if (!document.getElementById('terms-agreement').checked) {
-        showToast('❌ Please agree to the terms of service', 'error');
+    if (!registerData.email || !isValidEmail(registerData.email)) {
+        showToast('❌ Please enter a valid email address', 'error');
         return;
     }
     
-    const submitButton = e.target.querySelector('.auth-submit-btn');
+    if (!registerData.password || registerData.password.length < 6) {
+        showToast('❌ Password must be at least 6 characters long', 'error');
+        return;
+    }
+    
+    const submitButton = e.target.querySelector('.auth-btn');
     const originalText = submitButton.innerHTML;
     submitButton.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Creating Account...';
     submitButton.disabled = true;
@@ -2783,6 +2865,7 @@ async function handleRegister(e) {
         });
         
         const result = await response.json();
+        console.log('Registration response:', result);
         
         if (result.success) {
             // Store auth data

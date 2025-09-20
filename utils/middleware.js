@@ -1,25 +1,27 @@
 const multer = require('multer');
-const path = require('path');
-const fs = require('fs').promises;
+const express = require('express');
+const multerPackage = require('multer');
+const pathLib = require('path');
+const fsPromises = require('fs').promises;
 const { v4: uuidv4 } = require('uuid');
-const jwt = require('jsonwebtoken');
+const jwtLib = require('jsonwebtoken');
 
 // JWT Secret
 const JWT_SECRET = process.env.JWT_SECRET || 'boltin-super-secret-key-2025';
 
 // Configure multer for file uploads
-const storage = multer.diskStorage({
+const storage = multerPackage.diskStorage({
     destination: async (req, file, cb) => {
         const uploadDir = 'uploads/images';
         try {
-            await fs.mkdir(uploadDir, { recursive: true });
+            await fsPromises.mkdir(uploadDir, { recursive: true });
             cb(null, uploadDir);
         } catch (error) {
             cb(error);
         }
     },
     filename: (req, file, cb) => {
-        const uniqueName = `${uuidv4()}-${Date.now()}${path.extname(file.originalname)}`;
+        const uniqueName = `${uuidv4()}-${Date.now()}${pathLib.extname(file.originalname)}`;
         cb(null, uniqueName);
     }
 });
@@ -42,7 +44,7 @@ const fileFilter = (req, file, cb) => {
 };
 
 // Configure multer
-const upload = multer({
+const upload = multerPackage({
     storage: storage,
     limits: {
         fileSize: parseInt(process.env.MAX_FILE_SIZE) || 5 * 1024 * 1024, // 5MB default
@@ -53,7 +55,7 @@ const upload = multer({
 
 // Error handling middleware for multer
 const handleMulterError = (error, req, res, next) => {
-    if (error instanceof multer.MulterError) {
+    if (error instanceof multerPackage.MulterError) {
         if (error.code === 'LIMIT_FILE_SIZE') {
             return res.status(400).json({
                 error: 'File too large',
@@ -101,7 +103,7 @@ const authenticateToken = (req, res, next) => {
         });
     }
 
-    jwt.verify(token, JWT_SECRET, (err, user) => {
+    jwtLib.verify(token, JWT_SECRET, (err, user) => {
         if (err) {
             return res.status(403).json({
                 success: false,
@@ -133,7 +135,7 @@ const cleanupFiles = async (files) => {
     
     for (const file of files) {
         try {
-            await fs.unlink(file.path);
+            await fsPromises.unlink(file.path);
         } catch (error) {
             console.error(`Error deleting file ${file.path}:`, error);
         }
@@ -177,14 +179,36 @@ const getDeviceStatus = (device, reports) => {
         new Date(b.createdAt) - new Date(a.createdAt)
     )[0];
 
+    // Handle different report types
+    let message, color;
+    switch (latestReport.reportType) {
+        case 'stolen':
+            message = 'WARNING: This device has been reported as STOLEN!';
+            color = 'danger';
+            break;
+        case 'lost':
+            message = 'This device has been reported as lost.';
+            color = 'warning';
+            break;
+        case 'missing':
+            message = 'This device has been reported as missing.';
+            color = 'info';
+            break;
+        case 'found':
+            message = 'This device has been found and is awaiting pickup.';
+            color = 'primary';
+            break;
+        default:
+            message = 'This device has an active report.';
+            color = 'secondary';
+    }
+
     return {
         status: latestReport.reportType,
-        message: latestReport.reportType === 'stolen' 
-            ? 'WARNING: This device has been reported as STOLEN!'
-            : 'This device has been reported as lost.',
-        color: latestReport.reportType === 'stolen' ? 'danger' : 'warning',
-        reportDate: latestReport.incidentDate,
-        location: latestReport.location
+        message,
+        color,
+        reportDate: latestReport.incidentDate || latestReport.foundDate,
+        location: latestReport.location || latestReport.foundLocation
     };
 };
 
@@ -194,15 +218,21 @@ const generateStats = async (devicesDB, reportsDB) => {
     const reports = await reportsDB.read();
     
     const totalDevices = devices.length;
-    const stolenDevices = reports.filter(r => r.reportType === 'stolen').length;
-    const lostDevices = reports.filter(r => r.reportType === 'lost').length;
-    const safeDevices = totalDevices - (stolenDevices + lostDevices);
+    const stolenDevices = reports.filter(r => r.reportType === 'stolen' && r.status === 'active').length;
+    const lostDevices = reports.filter(r => r.reportType === 'lost' && r.status === 'active').length;
+    const missingDevices = reports.filter(r => r.reportType === 'missing' && r.status === 'active').length;
+    const foundDevices = reports.filter(r => r.reportType === 'found' && r.status === 'pending_pickup').length;
+    const totalReported = stolenDevices + lostDevices + missingDevices;
+    const safeDevices = totalDevices - totalReported;
     
     return {
         totalDevices,
         safeDevices,
         stolenDevices,
         lostDevices,
+        missingDevices,
+        foundDevices,
+        totalReported,
         recoveryRate: totalDevices > 0 ? Math.round((safeDevices / totalDevices) * 100) : 0
     };
 };

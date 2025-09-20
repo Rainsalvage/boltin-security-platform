@@ -1,5 +1,6 @@
 const express = require('express');
-const router = express.Router();
+const { Router } = require('express');
+const router = Router();
 const { asyncHandler, sendSuccess, sendError } = require('../utils/middleware');
 
 // POST /api/chatbot/message - Handle chatbot conversation

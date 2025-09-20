@@ -17,18 +17,6 @@ const isValidContact = (value) => {
 // Device validation rules
 const deviceValidationRules = () => {
     return [
-        body('ownerName')
-            .trim()
-            .isLength({ min: 2, max: 100 })
-            .withMessage('Owner name must be between 2 and 100 characters')
-            .matches(/^[a-zA-Z\s\-\.]+$/)
-            .withMessage('Owner name can only contain letters, spaces, hyphens, and dots'),
-        
-        body('contact')
-            .trim()
-            .custom(isValidContact)
-            .withMessage('Contact must be a valid email or phone number'),
-        
         body('deviceType')
             .isIn(['smartphone', 'car', 'motorcycle', 'laptop', 'tablet', 'smartwatch', 'camera', 'gaming_console', 'headphones', 'other'])
             .withMessage('Invalid device type'),
@@ -159,8 +147,8 @@ const reportValidationRules = () => {
             .withMessage('Owner contact must be a valid email or phone number'),
         
         body('reportType')
-            .isIn(['lost', 'stolen'])
-            .withMessage('Report type must be either "lost" or "stolen"'),
+            .isIn(['lost', 'stolen', 'missing'])
+            .withMessage('Report type must be either "lost", "stolen", or "missing"'),
         
         body('incidentDate')
             .isISO8601()
@@ -213,8 +201,6 @@ const handleValidationErrors = (req, res, next) => {
 // Sanitize input data
 const sanitizeDevice = (data) => {
     const sanitized = {
-        ownerName: data.ownerName?.trim(),
-        contact: data.contact?.trim(),
         deviceType: data.deviceType,
         brand: data.brand?.trim(),
         model: data.model?.trim(),

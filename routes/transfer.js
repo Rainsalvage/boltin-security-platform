@@ -1,5 +1,6 @@
 const express = require('express');
-const router = express.Router();
+const { Router } = require('express');
+const router = Router();
 const { devicesDB, transfersDB } = require('../utils/database');
 const { 
     transferValidationRules, 

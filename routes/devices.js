@@ -1,5 +1,6 @@
 const express = require('express');
-const router = express.Router();
+const { Router } = require('express');
+const router = Router();
 const { devicesDB, reportsDB } = require('../utils/database');
 const { authenticateToken } = require('../utils/middleware');
 const { 
@@ -123,10 +124,21 @@ router.post('/',
             }
         }
 
+        // Get user information from database
+        const { readData } = require('../utils/database');
+        const users = await readData('users');
+        const user = users.find(u => u.id === req.user.userId);
+        
+        if (!user) {
+            return sendError(res, 'User not found', 404);
+        }
+
         // Create new device with user ID and identification numbers
         const newDevice = await devicesDB.create({
             ...deviceData,
             ownerId: req.user.userId,
+            ownerName: `${user.firstName} ${user.lastName}`,
+            contact: user.email,
             images: [], // Will be populated when images are uploaded
             verified: false,
             registrationIP: req.ip,

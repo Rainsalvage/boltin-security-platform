@@ -1,0 +1,715 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Stolen Gadget Recovery Process - BOLTIN Security</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            font-size: 1.2em;
+            opacity: 0.9;
+        }
+
+        .content {
+            padding: 40px;
+        }
+
+        .process-overview {
+            background: linear-gradient(135deg, #e8f4fd 0%, #fff 100%);
+            border: 2px solid #3498db;
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 30px;
+        }
+
+        .process-overview h2 {
+            color: #2c3e50;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+        }
+
+        .process-overview h2 i {
+            margin-right: 10px;
+            color: #3498db;
+        }
+
+        .recovery-steps {
+            display: grid;
+            gap: 25px;
+        }
+
+        .step {
+            background: white;
+            border: 2px solid #e1e5e9;
+            border-radius: 15px;
+            padding: 25px;
+            position: relative;
+            transition: all 0.3s ease;
+        }
+
+        .step:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+        }
+
+        .step.immediate {
+            border-color: #e74c3c;
+            background: linear-gradient(135deg, #ffeaea 0%, #fff 100%);
+        }
+
+        .step.investigation {
+            border-color: #f39c12;
+            background: linear-gradient(135deg, #fef9e7 0%, #fff 100%);
+        }
+
+        .step.recovery {
+            border-color: #27ae60;
+            background: linear-gradient(135deg, #d5f4e6 0%, #fff 100%);
+        }
+
+        .step.legal {
+            border-color: #8e44ad;
+            background: linear-gradient(135deg, #f3e5f5 0%, #fff 100%);
+        }
+
+        .step-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .step-number {
+            background: #3498db;
+            color: white;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 1.2em;
+            margin-right: 15px;
+        }
+
+        .immediate .step-number {
+            background: #e74c3c;
+        }
+
+        .investigation .step-number {
+            background: #f39c12;
+        }
+
+        .recovery .step-number {
+            background: #27ae60;
+        }
+
+        .legal .step-number {
+            background: #8e44ad;
+        }
+
+        .step-title {
+            flex: 1;
+        }
+
+        .step-title h3 {
+            color: #2c3e50;
+            font-size: 1.4em;
+            margin-bottom: 5px;
+        }
+
+        .step-title .time-frame {
+            color: #7f8c8d;
+            font-size: 0.9em;
+            font-weight: 600;
+        }
+
+        .step-content {
+            margin-bottom: 20px;
+        }
+
+        .action-list {
+            list-style: none;
+            margin: 15px 0;
+        }
+
+        .action-list li {
+            margin: 8px 0;
+            padding-left: 25px;
+            position: relative;
+        }
+
+        .action-list li::before {
+            content: '✓';
+            position: absolute;
+            left: 0;
+            color: #27ae60;
+            font-weight: bold;
+        }
+
+        .important-note {
+            background: #fff3cd;
+            border: 1px solid #ffeaa7;
+            border-radius: 8px;
+            padding: 15px;
+            margin: 15px 0;
+            border-left: 4px solid #f39c12;
+        }
+
+        .important-note h4 {
+            color: #856404;
+            margin-bottom: 8px;
+        }
+
+        .important-note p {
+            color: #856404;
+            margin: 0;
+        }
+
+        .involved-parties {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin: 20px 0;
+        }
+
+        .party {
+            background: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 10px;
+            padding: 15px;
+            text-align: center;
+        }
+
+        .party i {
+            font-size: 2em;
+            margin-bottom: 10px;
+            color: #3498db;
+        }
+
+        .party h4 {
+            color: #2c3e50;
+            margin-bottom: 5px;
+        }
+
+        .party p {
+            color: #6c757d;
+            font-size: 0.9em;
+        }
+
+        .timeline {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 25px;
+            margin: 30px 0;
+        }
+
+        .timeline-item {
+            display: flex;
+            margin-bottom: 20px;
+            position: relative;
+        }
+
+        .timeline-item:not(:last-child)::after {
+            content: '';
+            position: absolute;
+            left: 20px;
+            top: 45px;
+            bottom: -20px;
+            width: 2px;
+            background: #dee2e6;
+        }
+
+        .timeline-icon {
+            width: 40px;
+            height: 40px;
+            background: #3498db;
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 15px;
+            flex-shrink: 0;
+        }
+
+        .timeline-content h4 {
+            color: #2c3e50;
+            margin-bottom: 5px;
+        }
+
+        .timeline-content p {
+            color: #6c757d;
+            margin: 0;
+        }
+
+        .success-factors {
+            background: linear-gradient(135deg, #d5f4e6 0%, #fff 100%);
+            border: 2px solid #27ae60;
+            border-radius: 15px;
+            padding: 25px;
+            margin: 30px 0;
+        }
+
+        .success-factors h3 {
+            color: #27ae60;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+        }
+
+        .success-factors h3 i {
+            margin-right: 10px;
+        }
+
+        .success-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 15px;
+        }
+
+        .success-item {
+            background: white;
+            border: 1px solid #27ae60;
+            border-radius: 8px;
+            padding: 15px;
+        }
+
+        .success-item h4 {
+            color: #27ae60;
+            margin-bottom: 8px;
+        }
+
+        .contact-info {
+            background: linear-gradient(135deg, #e3f2fd 0%, #fff 100%);
+            border: 2px solid #2196f3;
+            border-radius: 15px;
+            padding: 25px;
+            margin: 30px 0;
+            text-align: center;
+        }
+
+        .contact-info h3 {
+            color: #2196f3;
+            margin-bottom: 15px;
+        }
+
+        .contact-methods {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+        }
+
+        .contact-method {
+            background: white;
+            border: 1px solid #2196f3;
+            border-radius: 8px;
+            padding: 15px;
+        }
+
+        .btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 8px;
+            font-size: 1em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-decoration: none;
+            display: inline-block;
+            margin: 5px;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+
+        .btn-emergency {
+            background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);
+        }
+
+        @media (max-width: 768px) {
+            .content {
+                padding: 20px;
+            }
+            
+            .involved-parties {
+                grid-template-columns: 1fr;
+            }
+            
+            .contact-methods {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🔒 Stolen Gadget Recovery Process</h1>
+            <p>Complete Step-by-Step Guide for Device Recovery</p>
+        </div>
+
+        <div class="content">
+            <!-- Process Overview -->
+            <div class="process-overview">
+                <h2><i class="fas fa-route"></i> Recovery Process Overview</h2>
+                <p>The BOLTIN Security Platform follows a systematic approach to maximize the chances of recovering stolen devices. This process involves immediate action, investigation, community assistance, and legal procedures working together to return your device safely.</p>
+                
+                <div class="important-note">
+                    <h4><i class="fas fa-clock"></i> Time is Critical</h4>
+                    <p>The first 24-48 hours after theft are crucial. Quick action significantly increases recovery chances from 15% to 75%.</p>
+                </div>
+            </div>
+
+            <!-- Step-by-Step Recovery Process -->
+            <div class="recovery-steps">
+                
+                <!-- Phase 1: Immediate Actions -->
+                <div class="step immediate">
+                    <div class="step-header">
+                        <div class="step-number">1</div>
+                        <div class="step-title">
+                            <h3>🚨 Immediate Emergency Response</h3>
+                            <div class="time-frame">Within 0-2 Hours</div>
+                        </div>
+                    </div>
+                    
+                    <div class="step-content">
+                        <p><strong>Critical first actions when your device is stolen:</strong></p>
+                        
+                        <ul class="action-list">
+                            <li><strong>Report to BOLTIN Platform:</strong> Log into your account and mark device as stolen</li>
+                            <li><strong>Contact Police:</strong> File official police report immediately (get case number)</li>
+                            <li><strong>Remote Actions:</strong> Enable remote lock, wipe, and tracking if available</li>
+                            <li><strong>Network Notifications:</strong> Alert contacts about theft to prevent social engineering</li>
+                            <li><strong>Insurance Claims:</strong> Contact insurance provider to start claim process</li>
+                            <li><strong>Account Security:</strong> Change passwords for all accounts accessed on the device</li>
+                        </ul>
+                        
+                        <div class="involved-parties">
+                            <div class="party">
+                                <i class="fas fa-shield-alt"></i>
+                                <h4>BOLTIN Team</h4>
+                                <p>24/7 emergency response activation</p>
+                            </div>
+                            <div class="party">
+                                <i class="fas fa-badge"></i>
+                                <h4>Police</h4>
+                                <p>Official theft report and case opening</p>
+                            </div>
+                            <div class="party">
+                                <i class="fas fa-users"></i>
+                                <h4>Community</h4>
+                                <p>Local security network alert</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="important-note">
+                        <h4>🎯 BOLTIN Platform Actions</h4>
+                        <p>Device status automatically updated across all search systems. Public database shows theft warning to prevent resale.</p>
+                    </div>
+                </div>
+
+                <!-- Phase 2: Investigation -->
+                <div class="step investigation">
+                    <div class="step-header">
+                        <div class="step-number">2</div>
+                        <div class="step-title">
+                            <h3>🔍 Investigation & Tracking</h3>
+                            <div class="time-frame">2-24 Hours</div>
+                        </div>
+                    </div>
+                    
+                    <div class="step-content">
+                        <p><strong>Systematic investigation and tracking phase:</strong></p>
+                        
+                        <ul class="action-list">
+                            <li><strong>CCTV Analysis:</strong> Police review security footage from incident location</li>
+                            <li><strong>Digital Forensics:</strong> Track last known location and network activity</li>
+                            <li><strong>Witness Interviews:</strong> Collect statements from potential witnesses</li>
+                            <li><strong>Pawn Shop Alerts:</strong> Notify local pawn shops and resellers</li>
+                            <li><strong>Online Monitoring:</strong> Monitor online marketplaces for device listings</li>
+                            <li><strong>IMEI Blocking:</strong> Carrier blocks device from network access</li>
+                        </ul>
+                        
+                        <div class="timeline">
+                            <h4>Investigation Timeline:</h4>
+                            <div class="timeline-item">
+                                <div class="timeline-icon"><i class="fas fa-video"></i></div>
+                                <div class="timeline-content">
+                                    <h4>2-4 Hours: CCTV Review</h4>
+                                    <p>Security footage analysis from theft location and surrounding areas</p>
+                                </div>
+                            </div>
+                            <div class="timeline-item">
+                                <div class="timeline-icon"><i class="fas fa-satellite"></i></div>
+                                <div class="timeline-content">
+                                    <h4>4-8 Hours: Digital Tracking</h4>
+                                    <p>GPS, WiFi, and cellular data analysis for device location</p>
+                                </div>
+                            </div>
+                            <div class="timeline-item">
+                                <div class="timeline-icon"><i class="fas fa-search"></i></div>
+                                <div class="timeline-content">
+                                    <h4>8-24 Hours: Market Monitoring</h4>
+                                    <p>Active scanning of online and physical resale channels</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Phase 3: Recovery Operations -->
+                <div class="step recovery">
+                    <div class="step-header">
+                        <div class="step-number">3</div>
+                        <div class="step-title">
+                            <h3>🎯 Active Recovery Operations</h3>
+                            <div class="time-frame">1-7 Days</div>
+                        </div>
+                    </div>
+                    
+                    <div class="step-content">
+                        <p><strong>Multi-channel recovery efforts:</strong></p>
+                        
+                        <ul class="action-list">
+                            <li><strong>Sting Operations:</strong> Police conduct controlled buys from suspected sellers</li>
+                            <li><strong>Location Raids:</strong> Search warrants executed at identified locations</li>
+                            <li><strong>Public Appeals:</strong> Media campaigns for public assistance</li>
+                            <li><strong>Reward Programs:</strong> Financial incentives for information leading to recovery</li>
+                            <li><strong>Undercover Operations:</strong> Plain-clothes officers monitor known theft hotspots</li>
+                            <li><strong>Community Patrols:</strong> Local security teams increased presence</li>
+                        </ul>
+                        
+                        <div class="important-note">
+                            <h4>📱 Device Discovery Scenarios</h4>
+                            <p>Devices are typically recovered through: Police raids (45%), Public tips (25%), Pawn shop finds (20%), or Suspect arrests (10%).</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Phase 4: Legal Process -->
+                <div class="step legal">
+                    <div class="step-header">
+                        <div class="step-number">4</div>
+                        <div class="step-title">
+                            <h3>⚖️ Legal Process & Recovery</h3>
+                            <div class="time-frame">1-30 Days</div>
+                        </div>
+                    </div>
+                    
+                    <div class="step-content">
+                        <p><strong>Legal procedures and device return:</strong></p>
+                        
+                        <ul class="action-list">
+                            <li><strong>Evidence Processing:</strong> Device held as evidence during investigation</li>
+                            <li><strong>Ownership Verification:</strong> Proof of ownership using BOLTIN registration</li>
+                            <li><strong>Suspect Prosecution:</strong> Legal proceedings against perpetrators</li>
+                            <li><strong>Device Release:</strong> Formal return process once legal requirements met</li>
+                            <li><strong>Condition Assessment:</strong> Technical evaluation and data recovery if needed</li>
+                            <li><strong>Case Closure:</strong> Final report and case documentation</li>
+                        </ul>
+                        
+                        <div class="important-note">
+                            <h4>🔐 Ownership Verification Process</h4>
+                            <p>BOLTIN registration serves as official proof of ownership, streamlining the legal return process and reducing recovery time by up to 80%.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Phase 5: Return & Restoration -->
+                <div class="step recovery">
+                    <div class="step-header">
+                        <div class="step-number">5</div>
+                        <div class="step-title">
+                            <h3>🎉 Device Return & Restoration</h3>
+                            <div class="time-frame">Final Step</div>
+                        </div>
+                    </div>
+                    
+                    <div class="step-content">
+                        <p><strong>Safe return and restoration process:</strong></p>
+                        
+                        <ul class="action-list">
+                            <li><strong>Secure Handover:</strong> Device returned at police station with proper documentation</li>
+                            <li><strong>Condition Verification:</strong> Technical inspection for damage or tampering</li>
+                            <li><strong>Data Recovery:</strong> Professional data restoration if device was damaged</li>
+                            <li><strong>Security Reset:</strong> Complete device wipe and security reconfiguration</li>
+                            <li><strong>Status Update:</strong> BOLTIN platform updated to show device as recovered</li>
+                            <li><strong>Case Documentation:</strong> Complete recovery report for insurance/legal purposes</li>
+                        </ul>
+                        
+                        <div class="involved-parties">
+                            <div class="party">
+                                <i class="fas fa-handshake"></i>
+                                <h4>Police Station</h4>
+                                <p>Official device handover location</p>
+                            </div>
+                            <div class="party">
+                                <i class="fas fa-tools"></i>
+                                <h4>Tech Support</h4>
+                                <p>Device restoration and security setup</p>
+                            </div>
+                            <div class="party">
+                                <i class="fas fa-file-alt"></i>
+                                <h4>Documentation</h4>
+                                <p>Recovery certificates and legal papers</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Success Factors -->
+            <div class="success-factors">
+                <h3><i class="fas fa-trophy"></i> Factors that Increase Recovery Success</h3>
+                <div class="success-grid">
+                    <div class="success-item">
+                        <h4>Quick Reporting</h4>
+                        <p>Reporting within 2 hours increases recovery chances by 400%</p>
+                    </div>
+                    <div class="success-item">
+                        <h4>Complete Registration</h4>
+                        <p>Devices with full BOLTIN registration have 85% higher recovery rates</p>
+                    </div>
+                    <div class="success-item">
+                        <h4>Remote Tracking</h4>
+                        <p>Active GPS/Find My services triple the likelihood of recovery</p>
+                    </div>
+                    <div class="success-item">
+                        <h4>Community Support</h4>
+                        <p>Local security networks help recover 30% more devices</p>
+                    </div>
+                    <div class="success-item">
+                        <h4>Police Cooperation</h4>
+                        <p>Official police reports enable legal recovery actions</p>
+                    </div>
+                    <div class="success-item">
+                        <h4>Insurance Coverage</h4>
+                        <p>Proper insurance ensures compensation even if device isn't recovered</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Emergency Contacts -->
+            <div class="contact-info">
+                <h3><i class="fas fa-phone"></i> Emergency Contact Information</h3>
+                <p>Contact these services immediately if your device is stolen</p>
+                
+                <div class="contact-methods">
+                    <div class="contact-method">
+                        <h4>🚨 BOLTIN Emergency</h4>
+                        <p><strong>24/7 Hotline:</strong> 1-800-BOLTIN</p>
+                        <p><strong>Emergency Portal:</strong> boltin.com/emergency</p>
+                        <a href="#" class="btn btn-emergency">Report Now</a>
+                    </div>
+                    <div class="contact-method">
+                        <h4>👮 Local Police</h4>
+                        <p><strong>Emergency:</strong> 911</p>
+                        <p><strong>Non-Emergency:</strong> Local station number</p>
+                        <p>Get police case number for reference</p>
+                    </div>
+                    <div class="contact-method">
+                        <h4>📱 Carrier Services</h4>
+                        <p><strong>AT&T:</strong> 1-800-331-0500</p>
+                        <p><strong>Verizon:</strong> 1-800-922-0204</p>
+                        <p><strong>T-Mobile:</strong> 1-877-453-1304</p>
+                    </div>
+                </div>
+                
+                <div style="margin-top: 20px;">
+                    <a href="/dashboard" class="btn">Access Dashboard</a>
+                    <a href="/search" class="btn">Search Database</a>
+                    <a href="/report" class="btn btn-emergency">File Report</a>
+                </div>
+            </div>
+
+            <!-- Recovery Statistics -->
+            <div class="process-overview">
+                <h2><i class="fas fa-chart-line"></i> Recovery Success Statistics</h2>
+                <div class="success-grid">
+                    <div class="success-item">
+                        <h4>Overall Recovery Rate</h4>
+                        <p><strong>67%</strong> of registered devices are successfully recovered</p>
+                    </div>
+                    <div class="success-item">
+                        <h4>Average Recovery Time</h4>
+                        <p><strong>5.2 days</strong> from theft report to device return</p>
+                    </div>
+                    <div class="success-item">
+                        <h4>Quick Response Success</h4>
+                        <p><strong>89%</strong> recovery rate when reported within 2 hours</p>
+                    </div>
+                    <div class="success-item">
+                        <h4>Network Prevention</h4>
+                        <p><strong>34%</strong> of theft attempts prevented by BOLTIN alerts</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Add smooth scrolling for internal links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                document.querySelector(this.getAttribute('href')).scrollIntoView({
+                    behavior: 'smooth'
+                });
+            });
+        });
+
+        // Add click animations for buttons
+        document.querySelectorAll('.btn').forEach(button => {
+            button.addEventListener('click', function(e) {
+                this.style.transform = 'scale(0.95)';
+                setTimeout(() => {
+                    this.style.transform = '';
+                }, 150);
+            });
+        });
+    </script>
+</body>
+</html>
